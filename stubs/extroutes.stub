@@ -1,0 +1,16 @@
+<?php
+
+//------------------------------------------------------------------------------
+//    Auto-generated
+//    Time: #Time#
+//    Avoid edit this file by hand.
+//------------------------------------------------------------------------------
+
+use Illuminate\Routing\Router;
+
+Route::group([
+    'prefix'        => config('admin.route.prefix'),
+], function (Router $router) {
+
+    //#routers#
+});
