@@ -38,6 +38,8 @@ Open `http://your-host/admin/la-a-duo`
 
 After this it will create files in `/app/admin1` and create config file `/config/admin1.php`
 
+Logou from `/admin` to clear session state ,(open `http://your-host/admin/logout`) , this is important !
+
 Then open `http://your-host/admin1`
 
 ---
