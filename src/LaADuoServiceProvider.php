@@ -63,10 +63,6 @@ class LaADuoServiceProvider extends ServiceProvider
             }
 
             LaADuoExt::overrideConfig($console_prefix);
-
-            $config = config('admin');
-
-            \Log::info('console:' . json_encode($config));
         }
     }
 

@@ -38,8 +38,6 @@ class LaADuoExt extends Extension
     {
         $prefixes = static::config('prefixes', []);
 
-        //  return array_get($pindex, '');
-
         $index = 0;
 
         foreach ($prefixes as $prefix) {

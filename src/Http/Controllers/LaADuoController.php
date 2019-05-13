@@ -44,8 +44,6 @@ class LaADuoController extends Controller
     {
         $routes = $this->getRoutes();
 
-        //\Log::info(json_encode($routes));
-
         $route = config('admin.route', []);
 
         $basePrefix = array_get($route, 'prefix', 'admin');
@@ -71,7 +69,6 @@ class LaADuoController extends Controller
                 $namespace =    preg_replace('/(.+)\\\[^\\\]+$/', '$1', $route['action']);
 
                 if (empty(array_diff($middleware, $baseMiddleware)) && $baseNamespace == $namespace) {
-                    \Log::info('pass:' . json_encode($route));
                     continue;
                 }
             }
