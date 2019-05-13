@@ -286,7 +286,7 @@ class LaADuoController extends Controller
 
         $contents = preg_replace('/#prefix#/', '', $contents);
 
-        $contents = preg_replace('/#Time#/', date("yyyy-MM-dd HH:i:s", time()), $contents);
+        $contents = preg_replace('/#Time#/', date("Y/m/d h:i:s", time()), $contents);
 
         $contents = preg_replace('/lad\.admin#index#/', "lad.admin{$index}", $contents);
 
