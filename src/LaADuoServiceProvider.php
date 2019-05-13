@@ -27,20 +27,6 @@ class LaADuoServiceProvider extends ServiceProvider
     ];
 
     /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        $console_prefix = LaADuoExt::config('console_prefix');
-
-        $config = config("$console_prefix", []);;
-
-        \Log::info('console:' . json_encode($config));
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function boot(LaADuoExt $extension)
@@ -69,8 +55,18 @@ class LaADuoServiceProvider extends ServiceProvider
             $this->registerRouteMiddleware();
 
             $this->mapWebRoutes();
+        } else {
+            $console_prefix = LaADuoExt::config('console_prefix');
 
-            \Log::info('web:' . json_encode(config('admin')));
+            if (!$console_prefix) {
+                return;
+            }
+
+            LaADuoExt::overrideConfig($console_prefix);
+
+            $config = config('admin');
+
+            \Log::info('console:' . json_encode($config));
         }
     }
 
