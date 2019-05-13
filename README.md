@@ -25,8 +25,6 @@ Add a config in `config/admin.php`:
             'enable' => true,
             // ['admin1' ,'admin2' , ...]
             'prefixes' => ['admin1'],
-            // Cover config `admin` when run in console
-            'console_prefix' => '',
 
             'base_migration' => database_path('/migrations/2016_01_04_173148_create_admin_tables.php')
         ]

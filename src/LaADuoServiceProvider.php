@@ -7,6 +7,15 @@ use Illuminate\Support\ServiceProvider;
 class LaADuoServiceProvider extends ServiceProvider
 {
     /**
+     * @var array
+     */
+    protected $commands = [
+        Console\Installer::class,
+        Console\Router::class,
+        Console\Builder::class,
+    ];
+
+    /**
      * The application's route middleware.
      *
      * @var array
@@ -57,18 +66,7 @@ class LaADuoServiceProvider extends ServiceProvider
             $this->mapWebRoutes();
         } else {
 
-            $console_prefix = LaADuoExt::config('console_prefix');
-
-            if ($console_prefix) {
-
-                $base_migration = LaADuoExt::config('base_migration', database_path('/migrations/2016_01_04_173148_create_admin_tables.php'));
-
-                $dbConfigOld = config('admin.database');
-
-                LaADuoExt::overrideConfig($console_prefix);
-
-                LaADuoExt::updateMigrations($console_prefix, $base_migration, $dbConfigOld);
-            }
+            $this->commands($this->commands);
         }
     }
 
@@ -91,7 +89,7 @@ class LaADuoServiceProvider extends ServiceProvider
 
         $index = 0;
 
-        LaADuoExt::$base_prefix = $basePrefix;
+        LaADuoExt::$basePrefix = $basePrefix;
 
         foreach ($prefixes as $prefix) {
 

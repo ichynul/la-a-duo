@@ -30,9 +30,9 @@ class LaADuoExt extends Extension
      * Can use it in `bootstrap.php` or `Admin::booting(function (){});` or  `Admin::booted(function (){});`
      * @var string
      */
-    public static $boot_prefix = '';
+    public static $bootPrefix = '';
 
-    public static $base_prefix = '';
+    public static $basePrefix = '';
 
     public static function getPrefix($pindex)
     {
@@ -41,8 +41,11 @@ class LaADuoExt extends Extension
         $index = 0;
 
         foreach ($prefixes as $prefix) {
+
             $index += 1;
+
             if ($index == $pindex) {
+                
                 return $prefix;
             }
         }
@@ -88,58 +91,6 @@ class LaADuoExt extends Extension
         }
 
         config(['admin.route.prefix' => $prefix]);
-    }
-
-    /**
-     * Update migrations for current prefix when running in console
-     *
-     * init migrate for another database setting
-     *
-     * @param [type] $prefix
-     * @return void
-     */
-    public static function updateMigrations($console_prefix, $base_migration, $dbConfigOld)
-    {
-        $dbConfigCurren = config('admin.database');
-
-        $contents = app('files')->get($base_migration);
-
-        /**
-         * Connection is same check tables diffrence
-         */
-        if (array_get($dbConfigCurren, 'connection') == array_get($dbConfigOld, 'connection')) {
-
-            $watchTables = ['users_table', 'roles_table', 'permissions_table',
-                'menu_table', 'role_users_table', 'role_permissions_table',
-                'user_permissions_table', 'role_menu_table', 'operation_log_table',
-            ];
-
-            $newTables = [];
-
-            foreach ($watchTables as $table) {
-
-                if (array_get($dbConfigCurren, $table) == array_get($dbConfigOld, $table)) {
-                    continue;
-                }
-
-                if (empty(array_get($dbConfigOld, $table))) {
-                    continue;
-                }
-
-                $newTables[] = $table;
-            }
-
-            unset($table);
-
-            $noChangeTables = array_diff($watchTables, $newTables);
-
-            foreach ($noChangeTables as $table) {
-                // up
-                $contents = preg_replace("/Schema::[^\}]+?" . $table . "[^\}]+?\}\s*\)\s*;/s", "/*Table name : $table no change*/", $contents);
-                // down
-                $contents = preg_replace("/Schema::[^;]+?dropIfExists[^;]+?" . $table . "[^;]+?;/", "/*Table name : $table no change*/", $contents);
-            }
-        }
     }
 
     /**

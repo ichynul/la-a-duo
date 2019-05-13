@@ -12,7 +12,7 @@ class Authenticate extends BaseAuthenticate
     {
         $redirectTo = admin_base_path(config('admin.auth.redirect_to', 'auth/login'));
 
-        $prefix = LaADuoExt::$boot_prefix;
+        $prefix = LaADuoExt::$bootPrefix;
 
         if (Auth::guard($prefix)->guest() && !$this->shouldPassThrough($request)) {
             return redirect()->guest($redirectTo);

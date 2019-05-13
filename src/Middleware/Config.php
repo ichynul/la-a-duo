@@ -12,7 +12,7 @@ class Config
     {
         $prefix = LaADuoExt::getPrefix($index);
 
-        LaADuoExt::$boot_prefix = $prefix;
+        LaADuoExt::$bootPrefix = $prefix;
 
         LaADuoExt::overrideConfig($prefix);
 
