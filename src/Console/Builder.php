@@ -164,7 +164,6 @@ class Builder extends InstallCommand
 
     protected function migrate($path)
     {
-        \Log::info(json_encode(config('admin.database')));
         $this->line("<info>Run migrating : {$path}</info>");
 
         $this->call('migrate', ['--path' => $path]);
