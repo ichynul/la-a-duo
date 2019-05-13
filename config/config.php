@@ -3,15 +3,15 @@
 return [
 
     /**
-     * 
+     *
      * Configs extends /config/admin.php
-     * 
+     *
      * No need to set all one by one .
-     * 
+     *
      * If some configs not seted in this file , it will use the value in /config/admin.php
-     * 
+     *
      */
-    
+
     'name' => 'Laravel-admin',
 
     'logo' => '<b>Laravel</b> admin',
@@ -51,11 +51,11 @@ return [
         'menu_table' => 'admin_menu',
         'menu_model' => Encore\Admin\Auth\Database\Menu::class,
 
-        'operation_log_table'    => 'admin_operation_log',
+        'operation_log_table' => 'admin_operation_log',
         'user_permissions_table' => 'admin_user_permissions',
-        'role_users_table'       => 'admin_role_users',
+        'role_users_table' => 'admin_role_users',
         'role_permissions_table' => 'admin_role_permissions',
-        'role_menu_table'        => 'admin_role_menu',
+        'role_menu_table' => 'admin_role_menu',
     ],
 
     'skin' => 'skin-blue-light',
@@ -74,5 +74,6 @@ return [
 
     'minify_assets' => true,
 
-    
+    'bootstrap' => '#bootstrap#', // admin_path('bootstrap.php') to use /admin/bootstrap.php
+
 ];

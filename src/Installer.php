@@ -75,7 +75,6 @@ class Installer extends InstallCommand
         $this->createRoutesFile();
     }
 
-
     /**
      * Get stub contents.
      *
@@ -86,9 +85,9 @@ class Installer extends InstallCommand
     protected function getStub($name)
     {
         if (in_array($name, ['AuthController'])) {
-            return $this->laravel['files']->get(__DIR__ . '/../stubs' . DIRECTORY_SEPARATOR . "$name.stub");
+            return $this->laravel['files']->get(__DIR__ . "/../stubs/{$name}.stub");
         }
 
-        return $this->laravel['files']->get(base_path('vendor/encore/laravel-admin/src/Console') . "/stubs/$name.stub");
+        return $this->laravel['files']->get(base_path("vendor/encore/laravel-admin/src/Console/stubs/{$name}.stub"));
     }
 }

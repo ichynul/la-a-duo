@@ -249,11 +249,15 @@ class LaADuoController extends Controller
             return;
         }
 
-        $contents = app('files')->get(__DIR__ . '/../../../config' . DIRECTORY_SEPARATOR . 'config.php');
+        $contents = app('files')->get(__DIR__ . '/../../../config/config.php');
+
+        $contents = preg_replace('/.#auth.controller#./', 'App\\' . ucfirst($prefix) . '\\Controllers\\AuthController::class', $contents);
+
+        $contents = preg_replace('/.#bootstrap#./', "app_path('{$prefix}/bootstrap.php')", $contents);
 
         app('files')->put(
             $configFile,
-            preg_replace('/.#auth.controller#./', 'App\\' . ucfirst($prefix) . '\\Controllers\\AuthController::class', $contents)
+            $contents
         );
 
         $this->installer->line('<info>Config file was created:</info> ' . str_replace(base_path(), '', $configFile));
@@ -276,7 +280,7 @@ class LaADuoController extends Controller
             return;
         }
 
-        $contents = app('files')->get(__DIR__ . '/../../../stubs' . DIRECTORY_SEPARATOR . "extroutes.stub");
+        $contents = app('files')->get(__DIR__ . "/../../../stubs/extroutes.stub");
 
         $contents = preg_replace('/..#routers#/', implode(PHP_EOL . PHP_EOL . '    ', $this->routeLines), $contents);
 

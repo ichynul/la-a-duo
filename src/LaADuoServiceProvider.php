@@ -56,13 +56,19 @@ class LaADuoServiceProvider extends ServiceProvider
 
             $this->mapWebRoutes();
         } else {
+
             $console_prefix = LaADuoExt::config('console_prefix');
 
-            if (!$console_prefix) {
-                return;
-            }
+            if ($console_prefix) {
 
-            LaADuoExt::overrideConfig($console_prefix);
+                $base_migration = LaADuoExt::config('base_migration', database_path('/migrations/2016_01_04_173148_create_admin_tables.php'));
+
+                $dbConfigOld = config('admin.database');
+
+                LaADuoExt::overrideConfig($console_prefix);
+
+                LaADuoExt::updateMigrations($console_prefix, $base_migration, $dbConfigOld);
+            }
         }
     }
 
@@ -158,6 +164,12 @@ class LaADuoServiceProvider extends ServiceProvider
         ]);
     }
 
+    /**
+     * Add guard into /config/auth.php
+     *
+     * @param [type] $prefix
+     * @return void
+     */
     protected function setGurd($prefix)
     {
         config(['auth.guards.' . $prefix => [
