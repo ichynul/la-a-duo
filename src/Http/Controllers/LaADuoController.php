@@ -2,9 +2,9 @@
 
 namespace Ichynul\LaADuo\Http\Controllers;
 
+use Encore\Admin\Layout\Content;
 use Ichynul\LaADuo\Installer;
 use Ichynul\LaADuo\LaADuoExt;
-use Encore\Admin\Layout\Content;
 use Illuminate\Routing\Controller;
 
 class LaADuoController extends Controller
@@ -66,7 +66,7 @@ class LaADuoController extends Controller
 
             if (preg_match("/" . $basePrefix . "\/auth\/(users|roles|permissions|menu|logs|login|logout|setting|)$/", $route['uri'])) {
 
-                $namespace =    preg_replace('/(.+)\\\[^\\\]+$/', '$1', $route['action']);
+                $namespace = preg_replace('/(.+)\\\[^\\\]+$/', '$1', $route['action']);
 
                 if (empty(array_diff($middleware, $baseMiddleware)) && $baseNamespace == $namespace) {
                     continue;
@@ -93,9 +93,7 @@ class LaADuoController extends Controller
 
                 $name = empty($name) ? "" : "->name('{$name}')";
 
-                array_delete($middleware, 'admin');
-
-                array_delete($middleware, 'web');
+                $middleware = array_diff($middleware, ['admin', 'web', 'Closure']);
 
                 array_unshift($middleware, 'lad.admin');
 
@@ -135,7 +133,7 @@ class LaADuoController extends Controller
                     'enable' => true,
                     // ['admin1', 'admin2', ... ]
                     'prefixes' => ['admin1'],
-        
+
                     'console_prefix' => ''
                 ]
             ],</pre>");
@@ -199,7 +197,7 @@ class LaADuoController extends Controller
         $bootstrapFile = $directory . DIRECTORY_SEPARATOR . 'bootstrap.php';
         $routesFile = $directory . DIRECTORY_SEPARATOR . "routes.php";
         $extRoutesFile = $directory . DIRECTORY_SEPARATOR . "extroutes.php";
-        $configFile =  LaADuoExt::getConfigPath($prefix);
+        $configFile = LaADuoExt::getConfigPath($prefix);
 
         if (is_dir($directory . DIRECTORY_SEPARATOR . 'Controllers')) {
             $path = str_replace(base_path(), '', $directory . DIRECTORY_SEPARATOR . 'Controllers');
@@ -216,7 +214,6 @@ class LaADuoController extends Controller
         $this->fileInfo($extRoutesFile);
         $this->fileInfo($configFile);
     }
-
 
     /**
      * Check file info
@@ -236,7 +233,6 @@ class LaADuoController extends Controller
             $this->installer->line("<span class='label label-default' style='margin-left:90px;'>-{$path}</span><b class='label label-warning'>MISS</b>");
         }
     }
-
 
     /**
      * Create config.
@@ -319,11 +315,11 @@ class LaADuoController extends Controller
     protected function getRouteInformation($route)
     {
         return [
-            'host'       => $route->domain(),
-            'method'     => $route->methods(),
-            'uri'        => $route->uri(),
-            'name'       => $route->getName(),
-            'action'     => $route->getActionName(),
+            'host' => $route->domain(),
+            'method' => $route->methods(),
+            'uri' => $route->uri(),
+            'name' => $route->getName(),
+            'action' => $route->getActionName(),
             'middleware' => $this->getRouteMiddleware($route),
         ];
     }

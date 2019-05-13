@@ -12,8 +12,8 @@ class LaADuoServiceProvider extends ServiceProvider
      * @var array
      */
     protected $routeMiddleware = [
-        'lad.auth'       => Middleware\Authenticate::class,
-        'lad.config'       => Middleware\Config::class,
+        'lad.auth' => Middleware\Authenticate::class,
+        'lad.config' => Middleware\Config::class,
     ];
 
     protected $middlewareGroups = [
@@ -114,9 +114,7 @@ class LaADuoServiceProvider extends ServiceProvider
 
             $namespace = LaADuoExt::getNamespace($prefix);
 
-            array_delete($middleware, 'admin');
-
-            array_delete($middleware, 'web');
+            $middleware = array_diff($middleware, ['admin', 'web']);
 
             array_unshift($middleware, 'lad.admin');
 
@@ -128,9 +126,9 @@ class LaADuoServiceProvider extends ServiceProvider
                 'admin.route' => [
                     'prefix' => $prefix,
                     'namespace' => $namespace,
-                    'middleware' => $middleware
+                    'middleware' => $middleware,
                 ],
-                'admin.auth.controller' =>  config("{$prefix}.auth.controller", LaADuoExt::getDefaultAuthController($prefix))
+                'admin.auth.controller' => config("{$prefix}.auth.controller", LaADuoExt::getDefaultAuthController($prefix)),
             ]);
 
             if (!is_dir($directory)) {
@@ -156,7 +154,7 @@ class LaADuoServiceProvider extends ServiceProvider
         }
 
         config([
-            'admin.route' => $route, 'admin.auth.controller' => $authController
+            'admin.route' => $route, 'admin.auth.controller' => $authController,
         ]);
     }
 
