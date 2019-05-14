@@ -148,7 +148,7 @@ class Installer extends InstallCommand
 
         $contents = preg_replace('/.#auth.controller#./', 'App\\' . ucfirst($prefix) . '\\Controllers\\AuthController::class', $contents);
 
-        $contents = preg_replace('/.#bootstrap#./', "app_path('{$prefix}/bootstrap.php')", $contents);
+        $contents = preg_replace('/.#bootstrap#./', "app_path('" . ucfirst($prefix) . "/bootstrap.php')", $contents);
 
         $this->laravel['files']->put(
             $configFile,

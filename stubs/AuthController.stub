@@ -1,7 +1,8 @@
 <?php
 
-namespace DummyNamespace;
+namespace App\Admin1\Controllers;
 
+use Illuminate\Http\Request;
 use Ichynul\LaADuo\LaADuoExt;
 use Illuminate\Support\Facades\Auth;
 use Encore\Admin\Controllers\AuthController as BaseAuthController;
@@ -9,12 +10,26 @@ use Encore\Admin\Controllers\AuthController as BaseAuthController;
 class AuthController extends BaseAuthController
 {
     /**
+     * Send the response after the user was authenticated.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    protected function sendLoginResponse(Request $request)
+    {
+        Auth::guard('admin')->logout();
+
+        return parent::sendLoginResponse($request);
+    }
+
+    /**
      * Get the guard to be used during authentication.
      *
      * @return \Illuminate\Contracts\Auth\StatefulGuard
      */
     protected function guard()
     {
-        return Auth::guard(LaADuoExt::$boot_prefix);
+        return Auth::guard(LaADuoExt::$bootPrefix);
     }
 }
