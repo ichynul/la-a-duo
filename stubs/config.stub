@@ -20,15 +20,6 @@ return [
         'controller' => '#auth.controller#',
     ],
 
-    'upload' => [
-        'disk' => 'admin',
-
-        'directory' => [
-            'image' => 'images',
-            'file' => 'files',
-        ],
-    ],
-
     'database' => [
 
         'connection' => '',
@@ -60,6 +51,15 @@ return [
 
     /*
 
+    'upload' => [
+        'disk' => 'admin',
+
+        'directory' => [
+            'image' => 'images',
+            'file' => 'files',
+        ],
+    ],
+    
     'skin' => 'skin-blue-light',
 
     'layout' => ['sidebar-mini', 'sidebar-collapse'],

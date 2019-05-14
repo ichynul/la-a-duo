@@ -4,6 +4,8 @@ namespace Ichynul\LaADuo\Http\Controllers;
 
 use Ichynul\LaADuo\Console\Router;
 use Ichynul\LaADuo\Console\Installer;
+use Ichynul\LaADuo\Console\Builder;
+use Ichynul\LaADuo\Console\Seeder;
 use Ichynul\LaADuo\LaADuoExt;
 use Encore\Admin\Layout\Content;
 use Illuminate\Routing\Controller;
@@ -24,7 +26,7 @@ class LaADuoController extends Controller
             return $content
                 ->header('Laaduo')
                 ->body('<code>prefixes not seted ,pleace edit config in `config/admin.php`</code>' .
-"<pre>'extensions' => [
+                    "<pre>'extensions' => [
     'la-a-duo' => [
         // Set to `false` if you want to disable this extension
         'enable' => true,
@@ -46,12 +48,20 @@ class LaADuoController extends Controller
 
         $router = new Router;
 
+        $builder = new Builder;
+
+        $seeder = new Seeder;
+
         $installer->handle();
 
         $router->handle();
 
+        $builder->handle();
+
+        $seeder->handle();
+
         return $content
             ->header('Laaduo')
-            ->body(view('la-a-duo::index', ['lines' => array_merge($installer->getLines(), $router->getLines())]));
+            ->body(view('la-a-duo::index', ['lines' => array_merge($installer->getLines(), $router->getLines(), $builder->getLines(), $seeder->getLines())]));
     }
 }

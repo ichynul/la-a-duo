@@ -56,37 +56,32 @@ class Router extends Command
                     $this->line("prefix $currentPrefix dose not exists !");
                     return;
                 }
-
-                $index = 0;
-
-                foreach ($prefixes as $prefix) {
-
-                    $index += 1;
-
-                    if ($currentPrefix == $prefix) {
-                        $this->line("php artisan laaduo:route $prefix");
-
-                        $this->prefix($prefix, $index);
-                    }
+                if (!$this->laravel->runningInConsole()) {
+                    $this->line("php artisan laaduo:route $currentPrefix");
                 }
+
+                $this->prefix($currentPrefix);
 
                 return;
             }
         }
 
-        $index = 0;
 
-        $this->line("php artisan laaduo:route all");
+        if (!$this->laravel->runningInConsole()) {
+            $this->line("php artisan laaduo:route all");
+        }
 
         foreach ($prefixes as $prefix) {
 
-            $index += 1;
-
-            $this->prefix($prefix, $index);
+            try {
+                $this->prefix($prefix);
+            } catch (\Exception $e) {
+                $this->line($e->getMessage());
+            }
         }
     }
 
-    public function prefix($prefix, $index)
+    public function prefix($prefix)
     {
         $this->directory = app_path(ucfirst($prefix));
 
@@ -97,7 +92,7 @@ class Router extends Command
             return;
         }
 
-        $this->createExtRoutes($index, $prefix);
+        $this->createExtRoutes($prefix);
     }
 
     /**
@@ -105,7 +100,7 @@ class Router extends Command
      *
      * @return void
      */
-    public function createExtRoutes($index, $prefix)
+    public function createExtRoutes($prefix)
     {
         $extRoutesFile = $this->directory . DIRECTORY_SEPARATOR . "extroutes.php";
 
@@ -119,13 +114,15 @@ class Router extends Command
 
         $contents = preg_replace('/..#routers#/', implode(PHP_EOL . PHP_EOL . '    ', $this->routeLines), $contents);
 
+        $contents = preg_replace('/#Namestar#/', ucfirst($prefix), $contents);
+
+        $contents = preg_replace('/#Time#/', date("Y/m/d h:i:s", time()), $contents);
+
+        $contents = preg_replace('/lad\.prefix:#prefix#/', "lad.prefix:{$prefix}", $contents);
+
         $contents = preg_replace('/#prefix#/', '', $contents);
 
-        $contents = preg_replace('/#Time#/', date("Y/mm/dd h:i:s", time()), $contents);
-
-        $contents = preg_replace('/lad\.admin#index#/', "lad.admin{$index}", $contents);
-
-        $contents = preg_replace('/#currentAdminRoutes#/', str_replace(base_path(), '', app_path(ucfirst($prefix) . '/routes.php')), $contents);
+        $contents = preg_replace('/#currentAdmin#/', str_replace(base_path(), '', app_path(ucfirst($prefix))), $contents);
 
         $this->laravel['files']->put(
             $extRoutesFile,
@@ -168,6 +165,8 @@ class Router extends Command
 
             $name = $route['name'];
 
+            $middleware = $route['middleware']->all();
+
             $namespace = preg_replace('/(.+)\\\[^\\\]+$/', '$1', $action);
 
             if (preg_match('/Encore\\\Admin\\\Controllers/', $action)) {
@@ -178,13 +177,12 @@ class Router extends Command
                 continue;
             }
 
-            $middleware = $route['middleware']->all();
+            $same = empty(array_diff($middleware, $baseMiddleware)) && $baseNamespace == $namespace;
 
-            if (preg_match("/" . $basePrefix . "\/auth\/(users|roles|permissions|menu|logs|login|logout|setting|)$/", $route['uri'])) {
+            $system = preg_match("/" . $basePrefix . "\/auth\/(users|roles|permissions|menu|logs|login|logout|setting|)$/", $route['uri']);
 
-                if (empty(array_diff($middleware, $baseMiddleware)) && $baseNamespace == $namespace) {
-                    continue;
-                }
+            if ($system && $same) {
+                continue;
             }
 
             if (in_array('admin', $middleware)) {
@@ -207,7 +205,7 @@ class Router extends Command
 
                 array_unshift($middleware, 'lad.admin');
 
-                array_unshift($middleware, "lad.admin#index#");
+                array_unshift($middleware, "lad.prefix:#prefix#");
 
                 array_unshift($middleware, 'web');
 
@@ -219,15 +217,21 @@ class Router extends Command
 
                     $str = "\$router->{$method}('{$uri}', '$action'){$middle}{$name};";
 
-                    if ($namespace == $baseNamespace && !preg_match('/\\\HomeController@/', $action)) {
+                    if ($same && !preg_match('/\\\HomeController@/', $action)) {
 
                         $this->sameNamespaces[] = $str;
                     } else {
 
+                        if ($system && $baseNamespace == $namespace) {
+
+                            $newNamespace = preg_replace('/^(.?App\\\)\w+(\\\.+$)/', '$1#Namestar#$2', $namespace);
+
+                            $str = str_replace($namespace, $newNamespace, $str);
+                        }
+
                         $this->routeLines[] = $str;
                     }
                 }
-
             }
         }
 
@@ -237,11 +241,15 @@ class Router extends Command
 
         if (!empty($this->sameNamespaces)) {
 
-            $baseAdmin = str_replace(base_path(), '', admin_path('routes.php'));
+            $baseAdmin = str_replace(base_path(), '', admin_path());
 
-            array_unshift($this->sameNamespaces, "*If you need to use them ,just copy them frome $baseAdmin to #currentAdminRoutes# and then copy controllers" . PHP_EOL . PHP_EOL . '    */');
+            array_unshift($this->sameNamespaces, "*Or another way, just copy some routes you want frome this file to  #currentAdmin#" . DIRECTORY_SEPARATOR . "routes.php */");
 
-            array_unshift($this->sameNamespaces, "/**These routes were dissabled because they sames extends frome base Admin.");
+            array_unshift($this->sameNamespaces, "Then copy controllers frome {$baseAdmin} to #currentAdmin# and edit namespaces of them (bueause prefix changed).");
+
+            array_unshift($this->sameNamespaces, "If you want to use them ,copy routes frome {$baseAdmin} to #currentAdmin#.");
+
+            array_unshift($this->sameNamespaces, "/*Routes below were dissabled because they sames extends frome base Admin.");
         }
 
         $this->routeLines = array_merge($this->sameNamespaces, $this->routeLines);

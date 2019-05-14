@@ -13,6 +13,7 @@ class LaADuoServiceProvider extends ServiceProvider
         Console\Installer::class,
         Console\Router::class,
         Console\Builder::class,
+        Console\Seeder::class,
     ];
 
     /**
@@ -22,12 +23,14 @@ class LaADuoServiceProvider extends ServiceProvider
      */
     protected $routeMiddleware = [
         'lad.auth' => Middleware\Authenticate::class,
-        'lad.config' => Middleware\Config::class,
+        'lad.prefix' => Middleware\Prefix::class,
+        'lad.guards' => Middleware\AdminGuards::class,
     ];
 
     protected $middlewareGroups = [
         'lad.admin' => [
             'lad.auth',
+            'lad.guards',
             'admin.pjax',
             'admin.log',
             'admin.bootstrap',
@@ -87,13 +90,9 @@ class LaADuoServiceProvider extends ServiceProvider
 
         $baseMiddleware = array_get($route, 'middleware', []);
 
-        $index = 0;
-
         LaADuoExt::$basePrefix = $basePrefix;
 
         foreach ($prefixes as $prefix) {
-
-            $index += 1;
 
             if ($prefix == $basePrefix) {
                 continue;
@@ -102,8 +101,6 @@ class LaADuoServiceProvider extends ServiceProvider
             if (!preg_match('/^\w+$/', $prefix)) {
                 continue;
             }
-
-            app('router')->middlewareGroup("lad.admin{$index}", ["lad.config:{$index}"]);
 
             $directory = app_path(ucfirst($prefix));
 
@@ -122,7 +119,7 @@ class LaADuoServiceProvider extends ServiceProvider
 
             array_unshift($middleware, 'lad.admin');
 
-            array_unshift($middleware, "lad.admin{$index}");
+            array_unshift($middleware, "lad.prefix:{$prefix}");
 
             array_unshift($middleware, 'web');
 

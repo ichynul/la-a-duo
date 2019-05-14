@@ -2,10 +2,13 @@
 
 namespace Ichynul\LaADuo\Console;
 
-use Encore\Admin\Console\InstallCommand;
+use Illuminate\Console\Command;
 use Ichynul\LaADuo\LaADuoExt;
+use Illuminate\Support\Facades\Artisan;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\Output;
 
-class Builder extends InstallCommand
+class Builder extends Command
 {
     use Cmd;
 
@@ -59,7 +62,9 @@ class Builder extends InstallCommand
                     return;
                 }
 
-                $this->line("php artisan laaduo:build $currentPrefix");
+                if (!$this->laravel->runningInConsole()) {
+                    $this->line("php artisan laaduo:build $currentPrefix");
+                }
 
                 $this->prefix($currentPrefix);
 
@@ -67,11 +72,17 @@ class Builder extends InstallCommand
             }
         }
 
-        $this->line("php artisan laaduo:build all");
+        if (!$this->laravel->runningInConsole()) {
+            $this->line("php artisan laaduo:build all");
+        }
 
         foreach ($prefixes as $prefix) {
 
-            $this->prefix($prefix);
+            try {
+                $this->prefix($prefix);
+            } catch (\Exception $e) {
+                $this->line($e->getMessage());
+            }
         }
     }
 
@@ -119,7 +130,7 @@ class Builder extends InstallCommand
 
                 $newTables[] = $table;
 
-                $this->line("<span class='label label-default' style='margin-left:30px;'>{$table}</span> <b class='label label-success'>New</b>");
+                $this->line("<span class='label label-default'>`{$table}` : " . array_get($dbConfigCurrent, $table) . "</span> <b class='label label-success'>New</b>");
             }
 
             unset($table);
@@ -132,11 +143,24 @@ class Builder extends InstallCommand
                 // down
                 $contents = preg_replace("/Schema::[^;]+?dropIfExists[^;]+?" . $table . "[^;]+?;/", "/*Table name : $table no change*/", $contents);
 
-                $this->line("<span class='label label-default' style='margin-left:30px;'>{$table}</span> <b class='label label-warning'>NO change</b>");
+                $this->line("<span class='label label-default'>`{$table}` : " . array_get($dbConfigCurrent, $table) . "</span> <b class='label label-warning'>No change</b>");
             }
+
+            unset($table);
+
+            foreach ($newTables as $table) {
+                $contents = preg_replace("/Schema::[^\}]+?" . $table . "[^\}]+?\}\s*\)\s*;/s", "if (!Schema::hasTable(config('admin.database.$table'))){" . PHP_EOL . "            $0tableend}", $contents);
+            }
+
+            $contents = preg_replace('/\$table\->/', '    $0', $contents);
+
+            $contents = preg_replace('/(\}\);)tableend(\})/', '    $1' . PHP_EOL . '        $2', $contents);
         } else {
+
+            $this->line("<span class='label label-default'></span>Database connection changed:" . array_get($dbConfigCurrent, 'connection') . "</span>");
+
             foreach ($watchTables as $table) {
-                $this->line("<span class='label label-default' style='margin-left:30px;'>{$table}</span> <b class='label label-success'>OK</b>");
+                $this->line("<span class='label label-default'>`{$table}` " . array_get($dbConfigCurrent, $table) . "</span> <b class='label label-success'>OK</b>");
             }
         }
 
@@ -146,7 +170,7 @@ class Builder extends InstallCommand
 
         $contents = preg_replace("/admin\.database\./", "{$prefix}.database.", $contents);
 
-        $contents = preg_replace("/class \w+ extends/i", "class Create" . ucfirst($prefix) . "Tables extends", $contents);
+        $contents = preg_replace("/class \w+ extends/i", "class CreateAdminTables" . ucfirst($prefix) . " extends", $contents);
 
         if (!is_dir(dirname($migrations))) {
 
@@ -160,13 +184,67 @@ class Builder extends InstallCommand
 
         $this->line('<info>Migrations file was created:</info> ' . str_replace(base_path(), '', $migrations));
 
-        $this->migrate(str_replace(base_path(), '~', $migrations));
+        $this->migrate($migrations);
     }
 
     protected function migrate($path)
     {
-        $this->line("<info>Run migrating : {$path}</info>");
+        $path = str_replace(base_path() . DIRECTORY_SEPARATOR, '', dirname($path));
 
-        $this->call('migrate', ['--path' => ltrim($path, '/')]);
+        $path = preg_replace('/\\\/', '/', $path);
+
+        $this->line("php artisan migrate --path={$path}");
+
+        if ($this->laravel->runningInConsole()) {
+            $this->call('migrate', ['--path' => $path]);
+        } else {
+
+            // If Exception raised.
+            if (1 === Artisan::handle(
+                new ArgvInput(explode(' ', "artisan migrate --path={$path}")),
+                $output = new StringOutput()
+            )) {
+
+                $lines = collect($output->getLines())->map(function ($line) {
+                    return "<error>$line</error>";
+                })->all();
+
+                $this->lines = array_merge($this->lines, $lines);
+            } else {
+                $this->lines = array_merge($this->lines, $output->getLines());
+            }
+        }
+    }
+}
+
+class StringOutput extends Output
+{
+    public $lines = [];
+
+    public $line = '';
+
+    public function clear()
+    {
+        $this->lines = [];
+    }
+
+    protected function doWrite($message, $newline)
+    {
+        if ($newline) {
+            $this->lines[] = $message;
+            $this->line = '';
+        } else {
+            $this->line = $message;
+        }
+    }
+
+    public function getContent()
+    {
+        return trim(explode(PHP_EOL, $this->lines));
+    }
+
+    public function getLines()
+    {
+        return $this->lines;
     }
 }

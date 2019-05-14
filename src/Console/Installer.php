@@ -50,8 +50,9 @@ class Installer extends InstallCommand
                     $this->line("prefix $currentPrefix dose not exists !");
                     return;
                 }
-
-                $this->line("php artisan laaduo:install $currentPrefix");
+                if (!$this->laravel->runningInConsole()) {
+                    $this->line("php artisan laaduo:install $currentPrefix");
+                }
 
                 $this->prefix($currentPrefix);
 
@@ -59,11 +60,17 @@ class Installer extends InstallCommand
             }
         }
 
-        $this->line("php artisan laaduo:install all");
+        if (!$this->laravel->runningInConsole()) {
+            $this->line("php artisan laaduo:install all");
+        }
 
         foreach ($prefixes as $prefix) {
 
-            $this->prefix($prefix);
+            try {
+                $this->prefix($prefix);
+            } catch (\Exception $e) {
+                $this->line($e->getMessage());
+            }
         }
     }
 
@@ -92,7 +99,7 @@ class Installer extends InstallCommand
             return;
         }
 
-        $path = str_replace(base_path(), '~', $this->directory);
+        $path = str_replace(base_path(), '-', $this->directory);
 
         $this->line("{$path}");
 
@@ -124,7 +131,12 @@ class Installer extends InstallCommand
         $this->createConfig($prefix);
 
         if ($this->laravel->runningInConsole()) {
+
             $this->call("laaduo:route", ['prefix' => $prefix]);
+
+            $this->call("laaduo:build", ['prefix' => $prefix]);
+
+            $this->call("laaduo:seed", ['prefix' => $prefix]);
         }
     }
 
@@ -154,7 +166,7 @@ class Installer extends InstallCommand
             $contents
         );
 
-        $this->line('<info>Config file was created:</info> ' . str_replace(base_path(), '~', $configFile));
+        $this->line('<info>Config file was created:</info> ' . str_replace(base_path(), '-', $configFile));
     }
 
     /**
@@ -172,7 +184,7 @@ class Installer extends InstallCommand
 
         $this->makeDir('/');
 
-        $this->line('<info>Admin directory was created:</info> ' . str_replace(base_path(), '~', $this->directory));
+        $this->line('<info>Admin directory was created:</info> ' . str_replace(base_path(), '-', $this->directory));
 
         $this->makeDir('Controllers');
 

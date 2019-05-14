@@ -5,7 +5,6 @@ namespace Ichynul\LaADuo\Middleware;
 use Encore\Admin\Middleware\Authenticate as BaseAuthenticate;
 use Ichynul\LaADuo\LaADuoExt;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 
 class Authenticate extends BaseAuthenticate
 {
@@ -13,16 +12,16 @@ class Authenticate extends BaseAuthenticate
     {
         $redirectTo = admin_base_path(config('admin.auth.redirect_to', 'auth/login'));
 
-        $prefix = LaADuoExt::$bootPrefix;
+        $guard = LaADuoExt::guard();
 
-        if (Auth::guard($prefix)->guest() && !$this->shouldPassThrough($request)) {
+        if ($guard->guest() && !$this->shouldPassThrough($request)) {
+
             return redirect()->guest($redirectTo);
         }
 
-        if (!Auth::guard($prefix)->guest()) {
-            Auth::guard('admin')->setUser(Auth::guard($prefix)->user());
-        } else {
-            //Session::remove(Auth::guard('admin')->getName());
+        if (!$guard->guest()) {
+
+            Auth::guard('admin')->setUser($guard->user());
         }
 
         return $next($request);

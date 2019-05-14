@@ -64,7 +64,7 @@ trait Cmd
 
             $line = preg_replace('/<\/(info|question|error|warn)[^<>]+>/i', '</span>', $line);
 
-            if (preg_match('/php\s*artisan\s*laaduo:/i', $line)) {
+            if (preg_match('/php\s*artisan\s/i', $line)) {
                 $line = "<i style='color:#ba6b5e;'>$line</i>";
             }
 
@@ -80,11 +80,11 @@ trait Cmd
         $configFile = LaADuoExt::getConfigPath($prefix);
 
         if (is_dir($this->directory . DIRECTORY_SEPARATOR . 'Controllers')) {
-            $path = str_replace(base_path(), '~', $this->directory . DIRECTORY_SEPARATOR . 'Controllers');
+            $path = str_replace(base_path(), '-', $this->directory . DIRECTORY_SEPARATOR . 'Controllers');
 
             $this->line("<span'>{$path}</span> <b class='label label-success'>OK</b>");
         } else {
-            $path = str_replace(base_path(), '~', $this->directory . DIRECTORY_SEPARATOR . 'Controllers');
+            $path = str_replace(base_path(), '-', $this->directory . DIRECTORY_SEPARATOR . 'Controllers');
 
             $this->line("<span'>{$path}</span> <b class='label label-warning'>MISS</b>");
         }
@@ -104,13 +104,13 @@ trait Cmd
     protected function fileInfo($path)
     {
         if (file_exists($path)) {
-            $path = str_replace(base_path(), '~', $path);
+            $path = str_replace(base_path(), '-', $path);
 
             $this->line("<span'>{$path}</span> <b class='label label-success'>OK</b>");
         } else {
-            $path = str_replace(base_path(), '~', $path);
+            $path = str_replace(base_path(), '-', $path);
 
-            $this->line("<span'>{$path}</span> <b class='label label-warning'>MISS</b>");
+            $this->line("<span'>{$path}</span> <b class='label label-warning'>MISS, will create auto.</b>");
         }
     }
 

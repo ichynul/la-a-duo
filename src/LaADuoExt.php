@@ -3,6 +3,7 @@
 namespace Ichynul\LaADuo;
 
 use Encore\Admin\Extension;
+use Illuminate\Support\Facades\Auth;
 
 class LaADuoExt extends Extension
 {
@@ -33,25 +34,6 @@ class LaADuoExt extends Extension
     public static $bootPrefix = '';
 
     public static $basePrefix = '';
-
-    public static function getPrefix($pindex)
-    {
-        $prefixes = static::config('prefixes', []);
-
-        $index = 0;
-
-        foreach ($prefixes as $prefix) {
-
-            $index += 1;
-
-            if ($index == $pindex) {
-                
-                return $prefix;
-            }
-        }
-
-        return 0;
-    }
 
     /**
      * Override admin config with current prefix
@@ -157,5 +139,10 @@ class LaADuoExt extends Extension
     public static function getNamespace($prefix)
     {
         return 'App\\' . ucfirst($prefix) . '\\Controllers';
+    }
+
+    public static function guard()
+    {
+        return Auth::guard(static::$bootPrefix);
     }
 }
