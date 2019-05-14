@@ -2,9 +2,10 @@
 
 namespace Ichynul\LaADuo\Middleware;
 
+use Encore\Admin\Middleware\Authenticate as BaseAuthenticate;
 use Ichynul\LaADuo\LaADuoExt;
 use Illuminate\Support\Facades\Auth;
-use Encore\Admin\Middleware\Authenticate as BaseAuthenticate;
+use Illuminate\Support\Facades\Session;
 
 class Authenticate extends BaseAuthenticate
 {
@@ -20,8 +21,10 @@ class Authenticate extends BaseAuthenticate
 
         if (!Auth::guard($prefix)->guest()) {
             Auth::guard('admin')->setUser(Auth::guard($prefix)->user());
+        } else {
+            //Session::remove(Auth::guard('admin')->getName());
         }
-        
+
         return $next($request);
     }
 }

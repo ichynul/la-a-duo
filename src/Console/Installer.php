@@ -2,8 +2,8 @@
 
 namespace Ichynul\LaADuo\Console;
 
-use Ichynul\LaADuo\LaADuoExt;
 use Encore\Admin\Console\InstallCommand;
+use Ichynul\LaADuo\LaADuoExt;
 
 class Installer extends InstallCommand
 {
@@ -85,7 +85,6 @@ class Installer extends InstallCommand
             return;
         }
 
-
         if (!is_dir($this->directory)) {
 
             $this->create($prefix);
@@ -139,7 +138,7 @@ class Installer extends InstallCommand
         $configFile = LaADuoExt::getConfigPath($prefix);
 
         if (file_exists($configFile)) {
-            
+
             $this->line("Config file exists pass it:" . str_replace(base_path(), '', $configFile));
             return;
         }

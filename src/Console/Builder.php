@@ -23,7 +23,6 @@ class Builder extends InstallCommand
      */
     protected $description = 'Build table migrations for for prefix';
 
-
     protected $base_migration;
 
     protected $dbConfigOld;
@@ -141,7 +140,9 @@ class Builder extends InstallCommand
             }
         }
 
-        $migrations = database_path("migrations/{$prefix}/create_admin_tables.php");
+        $migrations = preg_replace('/migrations[\/\\\]/', "migrations/{$prefix}/", $this->base_migration);
+
+        $migrations = preg_replace('/\.php$/', "_{$prefix}.php", $migrations);
 
         $contents = preg_replace("/admin\.database\./", "{$prefix}.database.", $contents);
 
@@ -157,15 +158,15 @@ class Builder extends InstallCommand
             $contents
         );
 
-        $this->line('<info>Migrations file was created:</info> ' . str_replace(base_path(), '~', $migrations));
+        $this->line('<info>Migrations file was created:</info> ' . str_replace(base_path(), '', $migrations));
 
-        $this->migrate(dirname($migrations));
+        $this->migrate(str_replace(base_path(), '~', $migrations));
     }
 
     protected function migrate($path)
     {
         $this->line("<info>Run migrating : {$path}</info>");
 
-        $this->call('migrate', ['--path' => $path]);
+        $this->call('migrate', ['--path' => ltrim($path, '/')]);
     }
 }
