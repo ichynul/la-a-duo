@@ -243,9 +243,9 @@ class Router extends Command
 
             $baseAdmin = str_replace(base_path(), '', admin_path());
 
-            array_unshift($this->sameNamespaces, "*Or another way, just copy some routes you want frome this file to  #currentAdmin#" . DIRECTORY_SEPARATOR . "routes.php */");
+            array_unshift($this->sameNamespaces, "*Or another way, just copy some routes.php you want frome this file to  #currentAdmin#" . DIRECTORY_SEPARATOR . "routes.php */");
 
-            array_unshift($this->sameNamespaces, "Then copy controllers frome {$baseAdmin} to #currentAdmin# and edit namespaces of them (bueause prefix changed).");
+            array_unshift($this->sameNamespaces, "Then copy controllers frome {$baseAdmin}/Controllers to #currentAdmin#/Controllers and edit namespaces of them (bueause prefix changed).");
 
             array_unshift($this->sameNamespaces, "If you want to use them ,copy routes frome {$baseAdmin} to #currentAdmin#.");
 
