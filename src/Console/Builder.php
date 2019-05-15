@@ -134,6 +134,10 @@ class Builder extends Command
                 $this->line("<span class='label label-default'>`{$table}` : " . array_get($dbConfigCurrent, $table) . "</span> <b class='label label-success'>New</b>");
             }
 
+            if (count($newTables) == 0) {
+                $this->line('<span style="color:red;">Over.</span>');
+            }
+
             unset($table);
 
             $noChangeTables = array_diff($watchTables, $newTables);
@@ -200,9 +204,8 @@ class Builder extends Command
 
         $migrate = Migration::where('migration', $migration)->first();
 
-        if($migrate)
-        {
-            $this->line('<span style="color:red;">Delete migration info:'.json_encode($migrate).'</span>');
+        if ($migrate) {
+            $this->line('<span style="color:red;">Delete migration info:' . json_encode($migrate) . '</span>');
 
             $migrate->delete();
         }
