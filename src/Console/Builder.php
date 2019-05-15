@@ -135,7 +135,9 @@ class Builder extends Command
             }
 
             if (count($newTables) == 0) {
+
                 $this->line('<span style="color:red;">Over.</span>');
+                return;
             }
 
             unset($table);
