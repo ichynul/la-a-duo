@@ -2,8 +2,9 @@
 
 namespace Ichynul\LaADuo\Console;
 
-use Illuminate\Console\Command;
 use Ichynul\LaADuo\LaADuoExt;
+use Ichynul\LaADuo\Models\Migration;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\Output;
@@ -189,11 +190,24 @@ class Builder extends Command
 
     protected function migrate($path)
     {
+        $migration = preg_replace('/.+[\/\\\](.+)\.php$/', '$1', $path);
+
+        $this->line(json_encode($migration));
+
         $path = str_replace(base_path() . DIRECTORY_SEPARATOR, '', dirname($path));
 
         $path = preg_replace('/\\\/', '/', $path);
 
         $this->line("php artisan migrate --path={$path}");
+
+        $migrate = Migration::where('migration', $migration)->first();
+
+        if($migrate)
+        {
+            $this->line('<span style="color:red;">Delete migration info:'.json_encode($migrate).'</span>');
+
+            $migrate->delete();
+        }
 
         if ($this->laravel->runningInConsole()) {
             $this->call('migrate', ['--path' => $path]);
