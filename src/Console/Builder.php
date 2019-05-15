@@ -134,12 +134,6 @@ class Builder extends Command
                 $this->line("<span class='label label-default'>`{$table}` : " . array_get($dbConfigCurrent, $table) . "</span> <b class='label label-success'>New</b>");
             }
 
-            if (count($newTables) == 0) {
-
-                $this->line('<span style="color:red;">Over.</span>');
-                return;
-            }
-
             unset($table);
 
             $noChangeTables = array_diff($watchTables, $newTables);
@@ -159,9 +153,17 @@ class Builder extends Command
                 $contents = preg_replace("/Schema::[^\}]+?" . $table . "[^\}]+?\}\s*\)\s*;/s", "if (!Schema::hasTable(config('admin.database.$table'))){" . PHP_EOL . "            $0tableend}", $contents);
             }
 
+           
+
             $contents = preg_replace('/\$table\->/', '    $0', $contents);
 
             $contents = preg_replace('/(\}\);)tableend(\})/', '    $1' . PHP_EOL . '        $2', $contents);
+
+            if (count($newTables) == 0) {
+
+                return;
+            }
+
         } else {
 
             $this->line("<span class='label label-default'></span>Database connection changed:" . array_get($dbConfigCurrent, 'connection') . "</span>");
