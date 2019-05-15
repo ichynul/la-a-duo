@@ -166,7 +166,7 @@ class Installer extends InstallCommand
             $contents
         );
 
-        $this->line('<info>Config file was created:</info> ' . str_replace(base_path(), '-', $configFile));
+        $this->line('<info>Config file was created:</info> ' . str_replace(base_path(), '', $configFile));
     }
 
     /**
@@ -184,7 +184,7 @@ class Installer extends InstallCommand
 
         $this->makeDir('/');
 
-        $this->line('<info>Admin directory was created:</info> ' . str_replace(base_path(), '-', $this->directory));
+        $this->line('<info>Admin directory was created:</info> ' . str_replace(base_path(), '', $this->directory));
 
         $this->makeDir('Controllers');
 
