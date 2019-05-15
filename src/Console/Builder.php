@@ -192,8 +192,6 @@ class Builder extends Command
     {
         $migration = preg_replace('/.+[\/\\\](.+)\.php$/', '$1', $path);
 
-        $this->line(json_encode($migration));
-
         $path = str_replace(base_path() . DIRECTORY_SEPARATOR, '', dirname($path));
 
         $path = preg_replace('/\\\/', '/', $path);
