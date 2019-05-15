@@ -44,19 +44,27 @@ Then open `http://your-host/admin1`
 
 ## Commonds
 
-- `php artisan laaduo:{action} {prefix}` if no prefix, for all
+`php artisan laaduo:{action} {prefix?}` 
+    
+    if no prefix, for all
 
-- .
 
-- `php artisan laaduo:install admin1` Create `/app/Admin1` dir and create routes.php and controllers
+`php artisan laaduo:install admin1` 
+    
+    Create `/app/Admin1` dir and create routes.php and controllers
 
-- `php artisan laaduo:route admin1` Create `/app/Admin1/extroutes.php`
+`php artisan laaduo:route admin1` 
+    
+    Create `/app/Admin1/extroutes.php`
 
-- `php artisan laaduo:build admin1` Create `/database/migrations/admin1/2016_01_04_173148_create_admin_tables_admin1.php` and run `migrate`.
+`php artisan laaduo:build admin1` 
+    
+    Create `/database/migrations/admin1/2016_01_04_173148_create_admin_tables_admin1.php` and run `migrate`.
 
-- `php artisan laaduo:seed admin1` Run `AdminTablesSeeder` seed admin tables(users,rols,menus...), if table not empty, will pass it
+`php artisan laaduo:seed admin1` 
+    
+    Seed `AdminTablesSeeder` seed admin tables(users,rols,menus...), if table not empty, will pass it
 
-- .
 
 ---
 
