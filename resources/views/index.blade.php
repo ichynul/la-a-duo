@@ -1,5 +1,5 @@
-<div style="padding:0;">
-    @foreach($lines as $line)
-    <pre>{!! $line !!}</pre>
-    @endforeach
-</div>
+<pre style="line-height:25px;font-size:14px;">
+@foreach($lines as $line)
+{!! $line !!}
+@endforeach
+</pre>

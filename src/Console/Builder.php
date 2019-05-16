@@ -25,7 +25,7 @@ class Builder extends Command
      *
      * @var string
      */
-    protected $description = 'Build table migrations for for prefix';
+    protected $description = 'Build table migrations for prefix';
 
     protected $base_migration;
 
@@ -63,10 +63,6 @@ class Builder extends Command
                     return;
                 }
 
-                if (!$this->laravel->runningInConsole()) {
-                    $this->line("php artisan laaduo:build $currentPrefix");
-                }
-
                 $this->prefix($currentPrefix);
 
                 return;
@@ -102,6 +98,8 @@ class Builder extends Command
         if (empty($dbConfigCurrent)) {
 
             $this->line("Database configs not seted ,pleace edit config in `config/{$prefix}.php`");
+
+            return;
         }
 
         $contents = app('files')->get($this->base_migration);
@@ -131,7 +129,7 @@ class Builder extends Command
 
                 $newTables[] = $table;
 
-                $this->line("<span class='label label-default'>`{$table}` : " . array_get($dbConfigCurrent, $table) . "</span> <b class='label label-success'>New</b>");
+                $this->line("<info >`{$table}` : " . array_get($dbConfigCurrent, $table) . "</info> <b class='label label-success'>New</b>");
             }
 
             unset($table);
@@ -144,7 +142,7 @@ class Builder extends Command
                 // down
                 $contents = preg_replace("/Schema::[^;]+?dropIfExists[^;]+?" . $table . "[^;]+?;/", "/*Table name : $table no change*/", $contents);
 
-                $this->line("<span class='label label-default'>`{$table}` : " . array_get($dbConfigCurrent, $table) . "</span> <b class='label label-warning'>No change</b>");
+                $this->line("<info >`{$table}` : " . array_get($dbConfigCurrent, $table) . "</info> <b class='label label-warning'>No change</b>");
             }
 
             unset($table);
@@ -153,7 +151,7 @@ class Builder extends Command
                 $contents = preg_replace("/Schema::[^\}]+?" . $table . "[^\}]+?\}\s*\)\s*;/s", "if (!Schema::hasTable(config('admin.database.$table'))){" . PHP_EOL . "            $0tableend}", $contents);
             }
 
-           
+
 
             $contents = preg_replace('/\$table\->/', '    $0', $contents);
 
@@ -163,13 +161,12 @@ class Builder extends Command
 
                 return;
             }
-
         } else {
 
-            $this->line("<span class='label label-default'></span>Database connection changed:" . array_get($dbConfigCurrent, 'connection') . "</span>");
+            $this->line("Database connection changed:" . array_get($dbConfigCurrent, 'connection'));
 
             foreach ($watchTables as $table) {
-                $this->line("<span class='label label-default'>`{$table}` " . array_get($dbConfigCurrent, $table) . "</span> <b class='label label-success'>OK</b>");
+                $this->line("<info>`{$table}` " . array_get($dbConfigCurrent, $table) . "</info> <b class='label label-success'>OK</b>");
             }
         }
 
@@ -209,7 +206,7 @@ class Builder extends Command
         $migrate = Migration::where('migration', $migration)->first();
 
         if ($migrate) {
-            $this->line('<span style="color:red;">Delete migration info:' . json_encode($migrate) . '</span>');
+            $this->line('<info style="color:red;">Delete migration info:' . json_encode($migrate) . '</info>');
 
             $migrate->delete();
         }

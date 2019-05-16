@@ -64,4 +64,27 @@ class LaADuoController extends Controller
             ->header('Laaduo')
             ->body(view('la-a-duo::index', ['lines' => array_merge($installer->getLines(), $router->getLines(), $builder->getLines(), $seeder->getLines())]));
     }
+
+    public function ruoteTips(Content $content)
+    {
+        $baseAdmin = str_replace(base_path(), '', app_path(LaADuoExt::$basePrefix));
+
+        $currentAdmin = str_replace(base_path(), '', app_path(LaADuoExt::$bootPrefix));
+
+        return $content
+            ->header('Ruote tips')
+            ->body("<pre>
+Some routes were dissabled because they sames extends frome base Admin. 
+
+Such as `http://localhost/admin1/goods` => `Admin\Controllers\GoodsController@index` not `Admin1\Controllers\GoodsController@index`
+
+If you want to use them ,copy routes frome {$baseAdmin} to {$currentAdmin}.
+
+Then copy controllers frome {$baseAdmin}" . DIRECTORY_SEPARATOR . "Controllers to {$currentAdmin}" . DIRECTORY_SEPARATOR . "Controllers and edit namespaces of them (bueause prefix changed).
+
+Or another way, just copy some routes you want frome {$currentAdmin}" . DIRECTORY_SEPARATOR . "extroutes.php to  {$currentAdmin}" . DIRECTORY_SEPARATOR . "routes.php
+
+See {$currentAdmin}" . DIRECTORY_SEPARATOR . "extroutes.php for detail.
+            </pre>");
+    }
 }

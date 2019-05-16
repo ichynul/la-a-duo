@@ -21,7 +21,7 @@ class Router extends Command
      *
      * @var string
      */
-    protected $description = 'Create ext routes';
+    protected $description = 'Create ext-routes fot prefix';
 
     protected $routeLines = [];
 
@@ -55,9 +55,6 @@ class Router extends Command
 
                     $this->line("prefix $currentPrefix dose not exists !");
                     return;
-                }
-                if (!$this->laravel->runningInConsole()) {
-                    $this->line("php artisan laaduo:route $currentPrefix");
                 }
 
                 $this->prefix($currentPrefix);
@@ -179,7 +176,7 @@ class Router extends Command
 
             $same = empty(array_diff($middleware, $baseMiddleware)) && $baseNamespace == $namespace;
 
-            $system = preg_match("/" . $basePrefix . "\/auth\/(users|roles|permissions|menu|logs|login|logout|setting|)$/", $route['uri']);
+            $system = preg_match("/" . $basePrefix . "\/auth\/(users|roles|permissions|menu|logs|login|logout|setting)$/", $route['uri']);
 
             if ($system && $same) {
                 continue;
@@ -215,29 +212,32 @@ class Router extends Command
 
                     $method = strtolower($method);
 
-                    $str = "\$router->{$method}('{$uri}', '$action'){$middle}{$name};";
-
                     if ($same && !preg_match('/\\\HomeController@/', $action)) {
 
-                        $this->sameNamespaces[] = $str;
+                        $rourstr = "//\$router->{$method}('{$uri}', '$action'){$middle}{$name};";
+
+                        $this->sameNamespaces[] = $rourstr;
+
+                        $redirect = "\$router->{$method}('{$uri}', Ichynul\LaADuo\Http\Controllers\LaADuoController::class . '@ruoteTips')->middleware(['web','lad.prefix:#prefix#','lad.admin']);";
+
+                        $this->sameNamespaces[] = $redirect;
+
                     } else {
+
+                        $rourstr = "\$router->{$method}('{$uri}', '$action'){$middle}{$name};";
 
                         if ($system && $baseNamespace == $namespace) {
 
                             $newNamespace = preg_replace('/^(.?App\\\)\w+(\\\.+$)/', '$1#Namestar#$2', $namespace);
 
-                            $str = str_replace($namespace, $newNamespace, $str);
+                            $rourstr = str_replace($namespace, $newNamespace, $rourstr);
                         }
 
-                        $this->routeLines[] = $str;
+                        $this->routeLines[] = $rourstr;
                     }
                 }
             }
         }
-
-        $this->sameNamespaces = collect($this->sameNamespaces)->map(function ($name) {
-            return '//' . $name;
-        })->all();
 
         if (!empty($this->sameNamespaces)) {
 
@@ -245,14 +245,14 @@ class Router extends Command
 
             array_unshift($this->sameNamespaces, "*Or another way, just copy some routes you want frome this file to  #currentAdmin#" . DIRECTORY_SEPARATOR . "routes.php */");
 
-            array_unshift($this->sameNamespaces, "Then copy controllers frome {$baseAdmin}/Controllers to #currentAdmin#/Controllers and edit namespaces of them (bueause prefix changed).");
+            array_unshift($this->sameNamespaces, "Then copy controllers frome {$baseAdmin}" . DIRECTORY_SEPARATOR . "Controllers to #currentAdmin#" . DIRECTORY_SEPARATOR . "Controllers and edit namespaces of them (bueause prefix changed).");
 
             array_unshift($this->sameNamespaces, "If you want to use them ,copy routes frome {$baseAdmin} to #currentAdmin#.");
 
-            array_unshift($this->sameNamespaces, "/*Routes below were dissabled because they sames extends frome base Admin.");
+            array_unshift($this->sameNamespaces, "/*Routes below were dissabled because they sames extends frome base Admin. Such as http://localhost/admin/admin1/goods => Admin\Controllers\GoodsController@index");
         }
 
-        $this->routeLines = array_merge($this->sameNamespaces, $this->routeLines);
+        $this->routeLines = array_merge($this->routeLines, $this->sameNamespaces);
     }
 
     /**

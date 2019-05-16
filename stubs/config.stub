@@ -80,6 +80,6 @@ return [
 
     */
 
-    'bootstrap' => '#bootstrap#', // admin_path('bootstrap.php') to use /admin/bootstrap.php
+    'bootstrap' => '#bootstrap#'
 
 ];

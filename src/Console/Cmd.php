@@ -22,7 +22,7 @@ trait Cmd
         }
 
         if (!$this->laravel->runningInConsole()) {
-            return;
+            //return;
         }
 
         parent::__construct();
@@ -42,7 +42,7 @@ trait Cmd
 
         if ($this->laravel->runningInConsole()) {
 
-            $string = preg_replace('/<(\w+)[^<>]+>/', '<$1>', $string);
+            $string = preg_replace('/<(\w+)[^<>]*>/', '<$1>', $string);
 
             $string = preg_replace('/<(\/?)(?!(info|question|error|warn))[^<>]+>/i', '<$1info>', $string);
 
@@ -54,15 +54,15 @@ trait Cmd
     {
         return collect($this->lines)->map(function ($line) {
 
-            $line = preg_replace('/<info([^<>]+)>/i', '<span $1>', $line);
+            $line = preg_replace('/<info([^<>]*)>/i', '<info $1>', $line);
 
-            $line = preg_replace('/<question([^<>]+)>/i', '<span $1 class="label label-info">', $line);
+            $line = preg_replace('/<question([^<>]*)>/i', '<info $1 class="label label-info">', $line);
 
-            $line = preg_replace('/<error([^<>]+)>/i', '<span $1 class="label label-danger">', $line);
+            $line = preg_replace('/<error([^<>]*)>/i', '<info $1 class="label label-danger">', $line);
 
-            $line = preg_replace('/<warn([^<>]+)>/i', '<span $1 class="label label-warning">', $line);
+            $line = preg_replace('/<warn([^<>]*)>/i', '<info $1 class="label label-warning">', $line);
 
-            $line = preg_replace('/<\/(info|question|error|warn)[^<>]+>/i', '</span>', $line);
+            $line = preg_replace('/<\/(info|question|error|warn)[^<>]*>/i', '</info>', $line);
 
             if (preg_match('/php\s*artisan\s/i', $line)) {
                 $line = "<i style='color:#ba6b5e;'>$line</i>";
@@ -82,11 +82,11 @@ trait Cmd
         if (is_dir($this->directory . DIRECTORY_SEPARATOR . 'Controllers')) {
             $path = str_replace(base_path(), '-', $this->directory . DIRECTORY_SEPARATOR . 'Controllers');
 
-            $this->line("<span'>{$path}</span> <b class='label label-success'>OK</b>");
+            $this->line("<info>{$path}</info> <b class='label label-success'>OK</b>");
         } else {
             $path = str_replace(base_path(), '-', $this->directory . DIRECTORY_SEPARATOR . 'Controllers');
 
-            $this->line("<span'>{$path}</span> <b class='label label-warning'>MISS</b>");
+            $this->line("<info>{$path}</info> <b class='label label-warning'>MISS</b>");
         }
 
         $this->fileInfo($bootstrapFile);
@@ -106,11 +106,11 @@ trait Cmd
         if (file_exists($path)) {
             $path = str_replace(base_path(), '-', $path);
 
-            $this->line("<span'>{$path}</span> <b class='label label-success'>OK</b>");
+            $this->line("<info>{$path}</info> <b class='label label-success'>OK</b>");
         } else {
             $path = str_replace(base_path(), '-', $path);
 
-            $this->line("<span'>{$path}</span> <b class='label label-warning'>MISS, will create auto.</b>");
+            $this->line("<info>{$path}</info> <b class='label label-warning'>MISS, will create auto.</b>");
         }
     }
 

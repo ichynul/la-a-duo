@@ -1,6 +1,6 @@
 {
     "name": "ichynul/la-a-duo",
-    "description": "description...",
+    "description": "laravel-admin 后台多开",
     "type": "library",
     "keywords": ["laravel-admin", "extension"],
     "homepage": "https://github.com/ichynul/la-a-duo",

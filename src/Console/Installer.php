@@ -50,9 +50,6 @@ class Installer extends InstallCommand
                     $this->line("prefix $currentPrefix dose not exists !");
                     return;
                 }
-                if (!$this->laravel->runningInConsole()) {
-                    $this->line("php artisan laaduo:install $currentPrefix");
-                }
 
                 $this->prefix($currentPrefix);
 
@@ -82,13 +79,13 @@ class Installer extends InstallCommand
 
         if ($prefix == $basePrefix) {
 
-            $this->line("<span class='label label-warning'>Can't same as laravel-admin base prefix:{$prefix}</span>");
+            $this->line("<error>Can't same as laravel-admin base prefix:{$prefix}</error>");
             return;
         }
 
         if (!preg_match('/^\w+$/', $prefix)) {
 
-            $this->line("<span class='label label-warning'>Invalid prefix:{$prefix}</span> ");
+            $this->line("<error class='label label-warning'>Invalid prefix:{$prefix}</error> ");
             return;
         }
 
@@ -99,9 +96,15 @@ class Installer extends InstallCommand
             return;
         }
 
-        $path = str_replace(base_path(), '-', $this->directory);
+        $path = str_replace(base_path(), '', $this->directory);
 
-        $this->line("{$path}");
+        if (!$this->laravel->runningInConsole()) {
+            $url = url($prefix);
+
+            $this->line("<a href='{$url}' target='_blank'>{$url}</a>");
+        }
+
+        $this->line("-{$path}");
 
         $this->checkFiles($prefix);
 

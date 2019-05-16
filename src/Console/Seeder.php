@@ -25,7 +25,7 @@ class Seeder extends Command
      *
      * @var string
      */
-    protected $description = 'Install the admin package for prefix';
+    protected $description = 'Seed tables for prefix';
 
     /**
      * Install new apps
@@ -53,9 +53,6 @@ class Seeder extends Command
 
                     $this->line("prefix $currentPrefix dose not exists !");
                     return;
-                }
-                if (!$this->laravel->runningInConsole()) {
-                    $this->line("php artisan laaduo:seed $currentPrefix");
                 }
 
                 $this->prefix($currentPrefix);
@@ -85,6 +82,13 @@ class Seeder extends Command
      */
     public function prefix($prefix)
     {
+        $dbConfigCurrent = config("{$prefix}.database", []);
+
+        if (empty($dbConfigCurrent)) {
+
+            $this->line("Nothing to seed for $prefix");
+            return;
+        }
 
         LaADuoExt::overrideConfig($prefix);
 
@@ -96,9 +100,9 @@ class Seeder extends Command
                 'name' => 'Administrator',
             ]);
 
-            $this->line("<span class='label label-success'>Create admin user: admin</span> ");
+            $this->line("<info>Create admin user: admin</info> ");
         } else {
-            $this->line("<span class='label label-default'>Admin users table not empty, pass</span> ");
+            $this->line("<info>Admin users table not empty, pass</info> ");
         }
 
         if (!Role::count()) {
@@ -110,9 +114,9 @@ class Seeder extends Command
 
             Administrator::first()->roles()->save(Role::first());
 
-            $this->line("<span class='label label-success'>Create role: Administrator</span> ");
+            $this->line("<info>Create role: Administrator</info> ");
         } else {
-            $this->line("<span class='label label-default'>Admin roles table not empty, pass</span> ");
+            $this->line("<info>Admin roles table not empty, pass</info> ");
         }
 
         // add role to user.
@@ -156,9 +160,9 @@ class Seeder extends Command
 
             Role::first()->permissions()->save(Permission::first());
 
-            $this->line("<span class='label label-success'>Create permissions</span> ");
+            $this->line("<info>Create permissions</info> ");
         } else {
-            $this->line("<span class='label label-default'>Admin permissions table not empty, pass</span> ");
+            $this->line("<info>Admin permissions table not empty, pass</info> ");
         }
 
         // add default menus.
@@ -232,9 +236,9 @@ class Seeder extends Command
             // add role to menu.
             Menu::find(2)->roles()->save(Role::first());
 
-            $this->line("<span class='label label-success'>Create menus</span> ");
+            $this->line("<info >Create menus</info> ");
         } else {
-            $this->line("<span class='label label-default'>Admin menus table not empty, pass</span> ");
+            $this->line("<info >Admin menus table not empty, pass</info> ");
         }
     }
 }
