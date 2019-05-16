@@ -2,7 +2,6 @@
 
 namespace App\Admin1\Controllers;
 
-use Illuminate\Http\Request;
 use Ichynul\LaADuo\LaADuoExt;
 use Illuminate\Support\Facades\Auth;
 use Encore\Admin\Controllers\AuthController as BaseAuthController;

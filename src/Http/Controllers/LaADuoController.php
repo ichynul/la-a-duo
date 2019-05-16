@@ -2,13 +2,14 @@
 
 namespace Ichynul\LaADuo\Http\Controllers;
 
-use Ichynul\LaADuo\Console\Router;
-use Ichynul\LaADuo\Console\Installer;
-use Ichynul\LaADuo\Console\Builder;
-use Ichynul\LaADuo\Console\Seeder;
+use Illuminate\Http\Request;
 use Ichynul\LaADuo\LaADuoExt;
 use Encore\Admin\Layout\Content;
+use Ichynul\LaADuo\Console\Router;
+use Ichynul\LaADuo\Console\Seeder;
 use Illuminate\Routing\Controller;
+use Ichynul\LaADuo\Console\Builder;
+use Ichynul\LaADuo\Console\Installer;
 
 class LaADuoController extends Controller
 {
@@ -65,14 +66,20 @@ class LaADuoController extends Controller
             ->body(view('la-a-duo::index', ['lines' => array_merge($installer->getLines(), $router->getLines(), $builder->getLines(), $seeder->getLines())]));
     }
 
-    public function ruoteTips(Content $content)
+    public function ruoteTips(Request $equest, Content $content)
     {
         $baseAdmin = str_replace(base_path(), '', app_path(ucfirst(LaADuoExt::$basePrefix)));
 
         $currentAdmin = str_replace(base_path(), '', app_path(ucfirst(LaADuoExt::$bootPrefix)));
 
+        if ($equest->ajax()) {
+            return response()->json(['message' => "Some routes were dissabled because they sames extends frome base Admin, see {$currentAdmin}"
+                . DIRECTORY_SEPARATOR
+                . "extroutes.php for detail."]);
+        }
+
         return $content
-            ->header('Ruote tips')
+            ->header(' Ruote tips')
             ->body("<pre>
 Some routes were dissabled because they sames extends frome base Admin. 
 
