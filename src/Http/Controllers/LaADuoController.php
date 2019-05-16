@@ -67,9 +67,9 @@ class LaADuoController extends Controller
 
     public function ruoteTips(Content $content)
     {
-        $baseAdmin = str_replace(base_path(), '', app_path(LaADuoExt::$basePrefix));
+        $baseAdmin = str_replace(base_path(), '', app_path(ucfirst(LaADuoExt::$basePrefix)));
 
-        $currentAdmin = str_replace(base_path(), '', app_path(LaADuoExt::$bootPrefix));
+        $currentAdmin = str_replace(base_path(), '', app_path(ucfirst(LaADuoExt::$bootPrefix)));
 
         return $content
             ->header('Ruote tips')
