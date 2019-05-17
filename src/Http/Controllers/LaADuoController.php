@@ -71,7 +71,7 @@ class LaADuoController extends Controller
         $baseAdmin = str_replace(base_path(), '', app_path(ucfirst(LaADuoExt::$basePrefix)));
 
         $currentAdmin = str_replace(base_path(), '', app_path(ucfirst(LaADuoExt::$bootPrefix)));
-\Log::info($request->expectsJson());
+
         if ($request->expectsJson()) {
             return response()->json(['message' => "Some routes were dissabled because they sames extends frome base Admin, see {$currentAdmin}"
                 . DIRECTORY_SEPARATOR
