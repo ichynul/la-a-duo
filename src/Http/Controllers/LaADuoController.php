@@ -66,13 +66,13 @@ class LaADuoController extends Controller
             ->body(view('la-a-duo::index', ['lines' => array_merge($installer->getLines(), $router->getLines(), $builder->getLines(), $seeder->getLines())]));
     }
 
-    public function ruoteTips(Request $equest, Content $content)
+    public function ruoteTips(Request $request, Content $content)
     {
         $baseAdmin = str_replace(base_path(), '', app_path(ucfirst(LaADuoExt::$basePrefix)));
 
         $currentAdmin = str_replace(base_path(), '', app_path(ucfirst(LaADuoExt::$bootPrefix)));
-
-        if ($equest->ajax()) {
+\Log::info($request->expectsJson());
+        if ($request->expectsJson()) {
             return response()->json(['message' => "Some routes were dissabled because they sames extends frome base Admin, see {$currentAdmin}"
                 . DIRECTORY_SEPARATOR
                 . "extroutes.php for detail."]);
