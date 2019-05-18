@@ -39,6 +39,16 @@ class LaADuoServiceProvider extends ServiceProvider
     ];
 
     /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->registerRouteMiddleware();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function boot(LaADuoExt $extension)
@@ -63,8 +73,6 @@ class LaADuoServiceProvider extends ServiceProvider
         });
 
         if (!$this->app->runningInConsole()) {
-
-            $this->registerRouteMiddleware();
 
             $this->mapWebRoutes();
         } else {
