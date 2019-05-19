@@ -42,7 +42,7 @@ class LaADuoController extends Controller
         if (LaADuoExt::$bootPrefix) {
             return $content
                 ->header('Laaduo')
-                ->body("<code>Pleace open this page in laravel-admin base `https?://your-host/" . LaADuoExt::$basePrefix . "/la-a-duo`.</code>");
+                ->body("<code>Pleace open this page in laravel-admin base `" . url(LaADuoExt::$basePrefix . '/la-a-duo') . "`.</code>");
         }
 
         $installer = new Installer;
