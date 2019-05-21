@@ -243,13 +243,13 @@ class Router extends Command
 
             $baseAdmin = str_replace(base_path(), '', admin_path());
 
-            array_unshift($this->sameNamespaces, "*Or another way, just copy some routes you want frome this file to  #currentAdmin#" . DIRECTORY_SEPARATOR . "routes.php */");
+            array_unshift($this->sameNamespaces, "*Or another way, just copy some routes you want from this file to  #currentAdmin#" . DIRECTORY_SEPARATOR . "routes.php */");
 
-            array_unshift($this->sameNamespaces, "Then copy controllers frome {$baseAdmin}" . DIRECTORY_SEPARATOR . "Controllers to #currentAdmin#" . DIRECTORY_SEPARATOR . "Controllers and edit namespaces of them (bueause prefix changed).");
+            array_unshift($this->sameNamespaces, "Then copy controllers from {$baseAdmin}" . DIRECTORY_SEPARATOR . "Controllers to #currentAdmin#" . DIRECTORY_SEPARATOR . "Controllers and edit namespaces of them (bueause prefix changed).");
 
-            array_unshift($this->sameNamespaces, "If you want to use them ,copy routes frome {$baseAdmin} to #currentAdmin#.");
+            array_unshift($this->sameNamespaces, "If you want to use them ,copy routes from {$baseAdmin} to #currentAdmin#.");
 
-            array_unshift($this->sameNamespaces, "/*Routes below were dissabled because they sames extends frome base Admin. Such as http://localhost/admin/admin1/goods => Admin\Controllers\GoodsController@index");
+            array_unshift($this->sameNamespaces, "/*Routes below were dissabled because they sames extends from base Admin. Such as http://localhost/admin1/goods => Admin\Controllers\GoodsController@index");
         }
 
         $this->routeLines = array_merge($this->routeLines, $this->sameNamespaces);
