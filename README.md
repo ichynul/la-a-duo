@@ -27,6 +27,8 @@ Add a config in `config/admin.php`:
             'prefixes' => ['admin1'],
             // Set to `false` allow login to different prefixes in same brower
             'apart' => true,
+            // Set to `true` allow extend routes from base admin , Such as http://localhost/admin1/goods => Admin\Controllers\GoodsController@index 
+            'extend_routes' => false,
             // Base admin_tables migration file path, if new prefix use different database setting , copy this file for it
             'base_migration' => database_path('migrations/2016_01_04_173148_create_admin_tables.php')
         ]

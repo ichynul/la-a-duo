@@ -156,6 +156,8 @@ class Router extends Command
 
         $baseNamespace = array_get($route, 'namespace', '');
 
+        $extend_routes = LaADuoExt::config('extend_routes', false);
+
         foreach ($routes as $route) {
 
             $action = $route['action'];
@@ -214,14 +216,13 @@ class Router extends Command
 
                     if ($same && !preg_match('/\\\HomeController@/', $action)) {
 
-                        $rourstr = "//\$router->{$method}('{$uri}', '$action'){$middle}{$name};";
+                        if (!$extend_routes) {
+                            $rourstr = "//\$router->{$method}('{$uri}', '$action'){$middle}{$name};";
+                        } else {
+                            $rourstr = "\$router->{$method}('{$uri}', '$action'){$middle}{$name};";
+                        }
 
                         $this->sameNamespaces[] = $rourstr;
-
-                        $redirect = "\$router->{$method}('{$uri}', Ichynul\LaADuo\Http\Controllers\LaADuoController::class . '@ruoteTips')->middleware(['web','lad.prefix:#prefix#','lad.admin']);";
-
-                        $this->sameNamespaces[] = $redirect;
-
                     } else {
 
                         $rourstr = "\$router->{$method}('{$uri}', '$action'){$middle}{$name};";
@@ -239,11 +240,13 @@ class Router extends Command
             }
         }
 
-        if (!empty($this->sameNamespaces)) {
+        if (!empty($this->sameNamespaces && !$extend_routes)) {
 
             $baseAdmin = str_replace(base_path(), '', admin_path());
 
-            array_unshift($this->sameNamespaces, "*Or another way, just copy some routes you want from this file to  #currentAdmin#" . DIRECTORY_SEPARATOR . "routes.php */");
+            array_unshift($this->sameNamespaces, "*If you want extends all routes from base admin set config `extend_routes` to 'true' in `/config/admin.php` */");
+
+            array_unshift($this->sameNamespaces, "*Or another way, just copy some routes you want from this file to  #currentAdmin#" . DIRECTORY_SEPARATOR . "routes.php");
 
             array_unshift($this->sameNamespaces, "Then copy controllers from {$baseAdmin}" . DIRECTORY_SEPARATOR . "Controllers to #currentAdmin#" . DIRECTORY_SEPARATOR . "Controllers and edit namespaces of them (bueause prefix changed).");
 
