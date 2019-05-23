@@ -102,7 +102,7 @@ class Seeder extends Command
 
             $this->line("<info>Create admin user: admin</info> ");
         } else {
-            $this->line("<info>Admin users table not empty, pass</info> ");
+            $this->line("<info>Admin users table is not empty, pass</info> ");
         }
 
         if (!Role::count()) {
@@ -116,7 +116,7 @@ class Seeder extends Command
 
             $this->line("<info>Create role: Administrator</info> ");
         } else {
-            $this->line("<info>Admin roles table not empty, pass</info> ");
+            $this->line("<info>Admin roles table is not empty, pass</info> ");
         }
 
         // add role to user.
@@ -162,7 +162,7 @@ class Seeder extends Command
 
             $this->line("<info>Create permissions</info> ");
         } else {
-            $this->line("<info>Admin permissions table not empty, pass</info> ");
+            $this->line("<info>Admin permissions table is not empty, pass</info> ");
         }
 
         // add default menus.
@@ -238,7 +238,7 @@ class Seeder extends Command
 
             $this->line("<info >Create menus</info> ");
         } else {
-            $this->line("<info >Admin menus table not empty, pass</info> ");
+            $this->line("<info >Admin menus table is not empty, pass</info> ");
         }
     }
 }
