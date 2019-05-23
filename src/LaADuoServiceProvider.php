@@ -72,12 +72,8 @@ class LaADuoServiceProvider extends ServiceProvider
             LaADuoExt::routes(__DIR__ . '/../routes/web.php');
         });
 
-        if (!$this->app->runningInConsole()) {
+        $this->mapWebRoutes();
 
-            $this->mapWebRoutes();
-        } else {
-            
-        }
         $this->commands($this->commands);
     }
 
