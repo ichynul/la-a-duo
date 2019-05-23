@@ -7,7 +7,6 @@ use Ichynul\LaADuo\Models\Migration;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\Output;
 
 class Builder extends Command
 {
@@ -140,7 +139,7 @@ class Builder extends Command
                 // up
                 $contents = preg_replace("/Schema::[^\}]+?" . $table . "[^\}]+?\}\s*\)\s*;/s", "/*Table name : $table no change*/", $contents);
                 // down
-                $contents = preg_replace("/Schema::[^;]+?dropIfExists[^;]+?" . $table . "[^;]+?;/", "/*Table name : $table no change*/", $contents);
+                $contents = preg_replace("/Schema::[^;]*?dropIfExists[^;]+?" . $table . "[^;]+?;/", "/*Table name : $table no change*/", $contents);
 
                 $this->line("<info >`{$table}` : " . array_get($dbConfigCurrent, $table) . "</info> <b class='label label-warning'>No change</b>");
             }
@@ -150,8 +149,6 @@ class Builder extends Command
             foreach ($newTables as $table) {
                 $contents = preg_replace("/Schema::[^\}]+?" . $table . "[^\}]+?\}\s*\)\s*;/s", "if (!Schema::hasTable(config('admin.database.$table'))){" . PHP_EOL . "            $0tableend}", $contents);
             }
-
-
 
             $contents = preg_replace('/\$table\->/', '    $0', $contents);
 
@@ -230,37 +227,5 @@ class Builder extends Command
                 $this->lines = array_merge($this->lines, $output->getLines());
             }
         }
-    }
-}
-
-class StringOutput extends Output
-{
-    public $lines = [];
-
-    public $line = '';
-
-    public function clear()
-    {
-        $this->lines = [];
-    }
-
-    protected function doWrite($message, $newline)
-    {
-        if ($newline) {
-            $this->lines[] = $message;
-            $this->line = '';
-        } else {
-            $this->line = $message;
-        }
-    }
-
-    public function getContent()
-    {
-        return trim(explode(PHP_EOL, $this->lines));
-    }
-
-    public function getLines()
-    {
-        return $this->lines;
     }
 }

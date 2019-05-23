@@ -17,15 +17,15 @@ trait Cmd
      */
     public function __construct()
     {
+        parent::__construct();
+
         if (!$this->laravel) {
             $this->laravel = app();
         }
 
-        if (!$this->laravel->runningInConsole()) {
-            //return;
+        if (!$this->output) {
+            $this->output = new StringOutput();
         }
-
-        parent::__construct();
     }
 
     /**
@@ -40,14 +40,11 @@ trait Cmd
     {
         $this->lines[] = $string;
 
-        if ($this->laravel->runningInConsole()) {
+        $string = preg_replace('/<(\w+)[^<>]*>/', '<$1>', $string);
 
-            $string = preg_replace('/<(\w+)[^<>]*>/', '<$1>', $string);
+        $string = preg_replace('/<(\/?)(?!(info|question|error|warn))[^<>]+>/i', '<$1info>', $string);
 
-            $string = preg_replace('/<(\/?)(?!(info|question|error|warn))[^<>]+>/i', '<$1info>', $string);
-
-            parent::line($string, $style, $verbosity);
-        }
+        parent::line($string, $style, $verbosity);
     }
 
     public function getLines()

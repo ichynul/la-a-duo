@@ -73,7 +73,7 @@ class Installer extends InstallCommand
 
     public function prefix($prefix)
     {
-        $this->directory = app_path(ucfirst($prefix));
+        $this->directory = app_path(ucfirst($prefix));\Log::info($prefix);
 
         $basePrefix = config('admin.route.prefix', 'admin');
 

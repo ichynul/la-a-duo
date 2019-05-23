@@ -76,8 +76,9 @@ class LaADuoServiceProvider extends ServiceProvider
 
             $this->mapWebRoutes();
         } else {
-            $this->commands($this->commands);
+            
         }
+        $this->commands($this->commands);
     }
 
     /**
