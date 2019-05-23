@@ -21,7 +21,7 @@ class Router extends Command
      *
      * @var string
      */
-    protected $description = 'Create ext-routes fot prefix';
+    protected $description = 'Create ext-routes for prefix';
 
     protected $routeLines = [];
 
