@@ -64,7 +64,7 @@ Create `/database/migrations/admin1/2016_01_04_173148_create_admin_tables_admin1
 
 `$ php artisan laaduo:seed admin1` 
     
-Seed `AdminTablesSeeder` seed admin tables(users,rols,menus...), if table not empty, will pass it
+Seed `AdminTablesSeeder` seed admin tables(users,rols,menus...), if table is not empty, will pass it
 
 ---
 
