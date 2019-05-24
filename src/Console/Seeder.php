@@ -112,7 +112,9 @@ class Seeder extends Command
                 'slug' => 'administrator',
             ]);
 
-            Administrator::first()->roles()->save(Role::first());
+            if (!Administrator::first()->roles()->find(Role::first()->id)) {
+                Administrator::first()->roles()->save(Role::first());
+            }
 
             $this->line("<info>Create role: Administrator</info> ");
         } else {
@@ -158,7 +160,9 @@ class Seeder extends Command
                 ],
             ]);
 
-            Role::first()->permissions()->save(Permission::first());
+            if (!Role::first()->permissions()->find(Permission::first()->id)) {
+                Role::first()->permissions()->save(Permission::first());
+            }
 
             $this->line("<info>Create permissions</info> ");
         } else {

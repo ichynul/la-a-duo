@@ -2,7 +2,6 @@
 
 namespace Ichynul\LaADuo\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Ichynul\LaADuo\LaADuoExt;
 use Encore\Admin\Layout\Content;
 use Ichynul\LaADuo\Console\Router;

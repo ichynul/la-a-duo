@@ -244,7 +244,7 @@ class Router extends Command
 
             $baseAdmin = str_replace(base_path(), '', admin_path());
 
-            array_unshift($this->sameNamespaces, "*If you want extends all routes from base admin set config `extend_routes` to 'true' in `/config/admin.php` */");
+            array_unshift($this->sameNamespaces, "*If you want extends all routes from base admin, set config `extend_routes` to 'true' in `/config/admin.php` */");
 
             array_unshift($this->sameNamespaces, "*Or another way, just copy some routes you want from this file to  #currentAdmin#" . DIRECTORY_SEPARATOR . "routes.php");
 

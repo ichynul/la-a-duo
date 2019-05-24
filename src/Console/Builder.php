@@ -147,12 +147,12 @@ class Builder extends Command
             unset($table);
 
             foreach ($newTables as $table) {
-                $contents = preg_replace("/Schema::[^\}]+?" . $table . "[^\}]+?\}\s*\)\s*;/s", "if (!Schema::hasTable(config('admin.database.$table'))){" . PHP_EOL . "            $0tableend}", $contents);
+            $contents = preg_replace("/Schema::[^\}]+?" . $table . "[^\}]+?\}\s*\)\s*;/s", "if (!Schema::hasTable(config('admin.database.$table'))){" . PHP_EOL . "            $0/*tableend*/}", $contents);
             }
 
             $contents = preg_replace('/\$table\->/', '    $0', $contents);
 
-            $contents = preg_replace('/(\}\);)tableend(\})/', '    $1' . PHP_EOL . '        $2', $contents);
+            $contents = preg_replace('/(\}\);)\/\*tableend\*\/(\})/', '    $1' . PHP_EOL . '        $2', $contents);
 
             if (count($newTables) == 0) {
 

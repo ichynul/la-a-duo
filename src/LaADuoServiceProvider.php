@@ -2,6 +2,9 @@
 
 namespace Ichynul\LaADuo;
 
+use Encore\Admin\Admin;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 
 class LaADuoServiceProvider extends ServiceProvider
@@ -75,6 +78,20 @@ class LaADuoServiceProvider extends ServiceProvider
         $this->mapWebRoutes();
 
         $this->commands($this->commands);
+
+        if (!$this->app->runningInConsole() && LaADuoExt::config('apart', true)) {
+            Admin::booted(function () {
+                if (!Auth::guard('admin')->guest() && !LaADuoExt::$bootPrefix) { //current is base admin
+
+                    $prefixes = LaADuoExt::config('prefixes', []);
+
+                    foreach ($prefixes as $prefix) {
+
+                        Session::remove(Auth::guard($prefix)->getName()); // delete session state of other prefixes guards.
+                    }
+                }
+            });
+        }
     }
 
     /**
