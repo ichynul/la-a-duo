@@ -119,6 +119,8 @@ class LaADuoServiceProvider extends ServiceProvider
                 continue;
             }
 
+            $this->setGurd($prefix);
+            
             if (!preg_match('/^\w+$/', $prefix)) {
                 continue;
             }
@@ -162,8 +164,6 @@ class LaADuoServiceProvider extends ServiceProvider
             if (!file_exists($routesPath)) {
                 continue;
             }
-
-            $this->setGurd($prefix);
 
             $this->loadRoutesFrom($routesPath);
 
