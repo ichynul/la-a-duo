@@ -74,7 +74,6 @@ class Seeder extends Command
         foreach ($prefixes as $prefix) {
 
             try {
-                
 
                 $this->prefix($prefix);
 
