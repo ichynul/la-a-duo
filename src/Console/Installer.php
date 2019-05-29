@@ -203,13 +203,9 @@ class Installer extends InstallCommand
         $this->line('<info>Admin directory was created:</info> ' . str_replace(base_path(), '', $this->directory));
 
         $this->makeDir('Controllers');
-        \Log::info('1' . config('admin.route.namespace'));
         $this->createHomeController();
-        \Log::info('2' . config('admin.route.namespace'));
         $this->createAuthController();
-        \Log::info('3' . config('admin.route.namespace'));
         $this->createExampleController();
-        \Log::info('4' . config('admin.route.namespace'));
         $this->createBootstrapFile();
 
         $this->createRoutesFile();
