@@ -45,7 +45,7 @@ class Router extends Command
 
         $this->getRoutes();
 
-        if ($this->laravel->runningInConsole()) {
+        if ($this->input) {
 
             $currentPrefix = $this->argument('prefix');
 
@@ -61,8 +61,6 @@ class Router extends Command
 
                     $this->prefix($currentPrefix);
 
-                    $this->line('<span class="label label-default">*********************************************************************</span>');
-                    
                 } catch (\Exception $e) {
                     $this->line($e->getMessage());
                 }
@@ -82,7 +80,6 @@ class Router extends Command
                 $this->prefix($prefix);
 
                 $this->line('<span class="label label-default">*********************************************************************</span>');
-
             } catch (\Exception $e) {
                 $this->line($e->getMessage());
             }

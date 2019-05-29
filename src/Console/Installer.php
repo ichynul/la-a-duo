@@ -39,7 +39,7 @@ class Installer extends InstallCommand
             return;
         }
 
-        if ($this->laravel->runningInConsole()) {
+        if ($this->input) {
 
             $currentPrefix = $this->argument('prefix');
 
@@ -55,8 +55,6 @@ class Installer extends InstallCommand
 
                     $this->prefix($currentPrefix);
 
-                    $this->line('<span class="label label-default">*********************************************************************</span>');
-                    
                 } catch (\Exception $e) {
                     $this->line($e->getMessage());
                 }
