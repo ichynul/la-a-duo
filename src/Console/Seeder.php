@@ -55,7 +55,15 @@ class Seeder extends Command
                     return;
                 }
 
-                $this->prefix($currentPrefix);
+                try {
+
+                    $this->prefix($currentPrefix);
+
+                    $this->line('<span class="label label-default">*********************************************************************</span>');
+                    
+                } catch (\Exception $e) {
+                    $this->line($e->getMessage());
+                }
 
                 return;
             }
@@ -68,7 +76,12 @@ class Seeder extends Command
         foreach ($prefixes as $prefix) {
 
             try {
+                
+
                 $this->prefix($prefix);
+
+                $this->line('<span class="label label-default">*********************************************************************</span>');
+
             } catch (\Exception $e) {
                 $this->line($e->getMessage());
             }
@@ -82,6 +95,8 @@ class Seeder extends Command
      */
     public function prefix($prefix)
     {
+        $this->line("{$this->description}:{$prefix}");
+
         $dbConfigCurrent = config("{$prefix}.database", []);
 
         if (empty($dbConfigCurrent)) {

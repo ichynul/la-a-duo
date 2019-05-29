@@ -3,6 +3,9 @@
 namespace Ichynul\LaADuo\Console;
 
 use Ichynul\LaADuo\LaADuoExt;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Illuminate\Console\OutputStyle;
 
 trait Cmd
 {

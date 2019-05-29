@@ -32,6 +32,7 @@ class StringOutput extends Output
             $this->lines[] = $this->line;
             $this->line = '';
         }
+
         return trim(explode(PHP_EOL, $this->lines));
     }
 

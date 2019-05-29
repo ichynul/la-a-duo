@@ -62,7 +62,15 @@ class Builder extends Command
                     return;
                 }
 
-                $this->prefix($currentPrefix);
+                try {
+
+                    $this->prefix($currentPrefix);
+
+                    $this->line('<span class="label label-default">*********************************************************************</span>');
+
+                } catch (\Exception $e) {
+                    $this->line($e->getMessage());
+                }
 
                 return;
             }
@@ -76,6 +84,8 @@ class Builder extends Command
 
             try {
                 $this->prefix($prefix);
+
+                $this->line('<span class="label label-default">*********************************************************************</span>');
             } catch (\Exception $e) {
                 $this->line($e->getMessage());
             }
@@ -92,6 +102,8 @@ class Builder extends Command
      */
     public function prefix($prefix)
     {
+        $this->line("{$this->description}:{$prefix}");
+
         $dbConfigCurrent = config("{$prefix}.database", []);
 
         if (empty($dbConfigCurrent)) {
@@ -147,7 +159,7 @@ class Builder extends Command
             unset($table);
 
             foreach ($newTables as $table) {
-            $contents = preg_replace("/Schema::[^\}]+?" . $table . "[^\}]+?\}\s*\)\s*;/s", "if (!Schema::hasTable(config('admin.database.$table'))){" . PHP_EOL . "            $0/*tableend*/}", $contents);
+                $contents = preg_replace("/Schema::[^\}]+?" . $table . "[^\}]+?\}\s*\)\s*;/s", "if (!Schema::hasTable(config('admin.database.$table'))){" . PHP_EOL . "            $0/*tableend*/}", $contents);
             }
 
             $contents = preg_replace('/\$table\->/', '    $0', $contents);

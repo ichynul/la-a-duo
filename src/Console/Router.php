@@ -57,7 +57,15 @@ class Router extends Command
                     return;
                 }
 
-                $this->prefix($currentPrefix);
+                try {
+
+                    $this->prefix($currentPrefix);
+
+                    $this->line('<span class="label label-default">*********************************************************************</span>');
+                    
+                } catch (\Exception $e) {
+                    $this->line($e->getMessage());
+                }
 
                 return;
             }
@@ -72,6 +80,9 @@ class Router extends Command
 
             try {
                 $this->prefix($prefix);
+
+                $this->line('<span class="label label-default">*********************************************************************</span>');
+
             } catch (\Exception $e) {
                 $this->line($e->getMessage());
             }
@@ -80,6 +91,8 @@ class Router extends Command
 
     public function prefix($prefix)
     {
+        $this->line("{$this->description}:{$prefix}");
+
         $this->directory = app_path(ucfirst($prefix));
 
         if (!is_dir($this->directory)) {

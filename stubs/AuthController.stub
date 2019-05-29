@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Admin1\Controllers;
+namespace DummyNamespace;
 
 use Ichynul\LaADuo\LaADuoExt;
-use Illuminate\Support\Facades\Auth;
 use Encore\Admin\Controllers\AuthController as BaseAuthController;
 
 class AuthController extends BaseAuthController

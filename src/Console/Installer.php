@@ -51,7 +51,15 @@ class Installer extends InstallCommand
                     return;
                 }
 
-                $this->prefix($currentPrefix);
+                try {
+
+                    $this->prefix($currentPrefix);
+
+                    $this->line('<span class="label label-default">*********************************************************************</span>');
+                    
+                } catch (\Exception $e) {
+                    $this->line($e->getMessage());
+                }
 
                 return;
             }
@@ -65,6 +73,9 @@ class Installer extends InstallCommand
 
             try {
                 $this->prefix($prefix);
+
+                $this->line('<span class="label label-default">*********************************************************************</span>');
+
             } catch (\Exception $e) {
                 $this->line($e->getMessage());
             }
@@ -73,6 +84,8 @@ class Installer extends InstallCommand
 
     public function prefix($prefix)
     {
+        $this->line("{$this->description}:{$prefix}");
+
         $this->directory = app_path(ucfirst($prefix));
 
         $basePrefix = config('admin.route.prefix', 'admin');
@@ -190,13 +203,13 @@ class Installer extends InstallCommand
         $this->line('<info>Admin directory was created:</info> ' . str_replace(base_path(), '', $this->directory));
 
         $this->makeDir('Controllers');
-
+        \Log::info('1' . config('admin.route.namespace'));
         $this->createHomeController();
-
+        \Log::info('2' . config('admin.route.namespace'));
         $this->createAuthController();
-
+        \Log::info('3' . config('admin.route.namespace'));
         $this->createExampleController();
-
+        \Log::info('4' . config('admin.route.namespace'));
         $this->createBootstrapFile();
 
         $this->createRoutesFile();
