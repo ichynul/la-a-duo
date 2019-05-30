@@ -56,7 +56,7 @@ class Installer extends InstallCommand
                     $this->prefix($currentPrefix);
 
                 } catch (\Exception $e) {
-                    $this->line($e->getMessage());
+                    $this->line("<error>" . $e->getMessage() . "</error>");
                 }
 
                 return;
@@ -75,7 +75,7 @@ class Installer extends InstallCommand
                 $this->line('<span class="label label-default">*********************************************************************</span>');
 
             } catch (\Exception $e) {
-                $this->line($e->getMessage());
+                $this->line("<error>" . $e->getMessage() . "</error>");
             }
         }
     }

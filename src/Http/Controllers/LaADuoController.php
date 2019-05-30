@@ -2,7 +2,9 @@
 
 namespace Ichynul\LaADuo\Http\Controllers;
 
+use Encore\Admin\Widgets\Box;
 use Ichynul\LaADuo\LaADuoExt;
+use Encore\Admin\Widgets\Form;
 use Encore\Admin\Layout\Content;
 use Ichynul\LaADuo\Console\Router;
 use Ichynul\LaADuo\Console\Seeder;
@@ -18,7 +20,6 @@ class LaADuoController extends Controller
 
     public function index(Content $content)
     {
-
         $prefixes = LaADuoExt::config('prefixes', []);
 
         if (empty($prefixes)) {
@@ -44,24 +45,111 @@ class LaADuoController extends Controller
                 ->body("<code>Pleace open this page in laravel-admin base `" . url(LaADuoExt::$basePrefix . '/la-a-duo') . "`.</code>");
         }
 
-        $installer = new Installer;
+        $prefix = request('prefix', '');
 
-        $router = new Router;
+        $commonds = array_filter(request('commonds', []));
 
-        $builder = new Builder;
+        $lines = [];
 
-        $seeder = new Seeder;
+        if (!empty($prefix) && !empty($commonds)) {
+            if (in_array('install', $commonds)) {
+                $installer = new Installer;
 
-        $installer->handle();
+                $installer->line("php artisan laaduo:install $prefix");
 
-        $router->handle();
+                try {
+                    $installer->prefix($prefix);
+                } catch (\Exception $e) {
+                    $installer->line("<error>" . $e->getMessage() . "</error>");
+                }
 
-        $builder->handle();
 
-        $seeder->handle();
+                $lines = array_merge($lines, $installer->getLines());
+            }
+
+            if (in_array('route', $commonds)) {
+                $router = new Router;
+
+                $router->line("php artisan laaduo:route $prefix");
+
+                try {
+                    $router->prefix($prefix);
+                } catch (\Exception $e) {
+                    $router->line("<error>" . $e->getMessage() . "</error>");
+                }
+
+                $lines = array_merge($lines, $router->getLines());
+            }
+
+            if (in_array('build', $commonds)) {
+                $builder = new Builder;
+
+                $builder->line("php artisan laaduo:build $prefix");
+
+                $builder->prefix($prefix);
+                try { } catch (\Exception $e) {
+                    $builder->line("<error>" . $e->getMessage() . "</error>");
+                }
+
+                $lines = array_merge($lines, $builder->getLines());
+            }
+
+            if (in_array('seed', $commonds)) {
+                $seeder = new Seeder;
+
+                $seeder->line("php artisan laaduo:seed $prefix");
+
+                try {
+                    $seeder->prefix($prefix);
+                } catch (\Exception $e) {
+                    $seeder->line("<error>" . $e->getMessage() . "</error>");
+                }
+
+                $lines = array_merge($lines, $seeder->getLines());
+            }
+        }
 
         return $content
-            ->header('Laaduo')
-            ->body(view('la-a-duo::index', ['lines' => array_merge($installer->getLines(), $router->getLines(), $builder->getLines(), $seeder->getLines())]));
+            ->header(' ')
+            ->row($this->form($prefixes, $lines));
+    }
+
+    protected function form($prefixes, $lines)
+    {
+        $form = new Form();
+
+        $form->setWidth(2, 1);
+
+        $commonds = new Box('Commonds', view('la-a-duo::help'));
+
+        $commonds->solid();
+
+        $form->html($commonds)->setWidth(12, 0);
+
+        $arr = [];
+
+        foreach ($prefixes as $p) {
+            $arr[$p] = $p;
+        }
+
+        $form->radio('prefix', 'Prefix')->options($arr)->default(request('prefix', array_get($prefixes, 0)))->setWidth(6, 2);
+
+        $form->checkbox('commonds', 'Commonds')
+
+            ->options(['install' => 'install', 'route' => 'route', 'build' => 'build', 'seed' => 'seed'])
+
+            ->default(request('commonds', ['install', 'route']))->setWidth(6, 2);
+
+        $form->method('get');
+
+        $form->disablePjax();
+
+        $form->disableReset();
+
+        $box = new Box('Laaduo', $form->render() . view('la-a-duo::output', ['lines' => $lines]));
+
+        $box->solid();
+
+        return $box;
     }
 }

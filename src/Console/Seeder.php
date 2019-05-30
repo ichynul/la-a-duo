@@ -60,7 +60,7 @@ class Seeder extends Command
                     $this->prefix($currentPrefix);
 
                 } catch (\Exception $e) {
-                    $this->line($e->getMessage());
+                    $this->line("<error>" . $e->getMessage() . "</error>");
                 }
 
                 return;
@@ -74,13 +74,12 @@ class Seeder extends Command
         foreach ($prefixes as $prefix) {
 
             try {
-
                 $this->prefix($prefix);
 
                 $this->line('<span class="label label-default">*********************************************************************</span>');
 
             } catch (\Exception $e) {
-                $this->line($e->getMessage());
+                $this->line("<error>" . $e->getMessage() . "</error>");
             }
         }
     }

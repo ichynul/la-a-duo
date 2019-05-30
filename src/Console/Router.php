@@ -62,7 +62,7 @@ class Router extends Command
                     $this->prefix($currentPrefix);
 
                 } catch (\Exception $e) {
-                    $this->line($e->getMessage());
+                    $this->line("<error>" . $e->getMessage() . "</error>");
                 }
 
                 return;
@@ -81,7 +81,7 @@ class Router extends Command
 
                 $this->line('<span class="label label-default">*********************************************************************</span>');
             } catch (\Exception $e) {
-                $this->line($e->getMessage());
+                $this->line("<error>" . $e->getMessage() . "</error>");
             }
         }
     }

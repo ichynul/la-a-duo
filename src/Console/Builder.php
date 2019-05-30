@@ -37,10 +37,6 @@ class Builder extends Command
      */
     public function handle()
     {
-        $this->base_migration = LaADuoExt::config('base_migration', database_path('migrations/2016_01_04_173148_create_admin_tables.php'));
-
-        $this->dbConfigOld = config('admin.database');
-
         $prefixes = LaADuoExt::config('prefixes', []);
 
         if (empty($prefixes)) {
@@ -65,9 +61,8 @@ class Builder extends Command
                 try {
 
                     $this->prefix($currentPrefix);
-
                 } catch (\Exception $e) {
-                    $this->line($e->getMessage());
+                    $this->line("<error>" . $e->getMessage() . "</error>");
                 }
 
                 return;
@@ -85,7 +80,7 @@ class Builder extends Command
 
                 $this->line('<span class="label label-default">*********************************************************************</span>');
             } catch (\Exception $e) {
-                $this->line($e->getMessage());
+                $this->line("<error>" . $e->getMessage() . "</error>");
             }
         }
     }
@@ -101,6 +96,14 @@ class Builder extends Command
     public function prefix($prefix)
     {
         $this->line("{$this->description}:{$prefix}");
+
+        if (!$this->dbConfigOld) {
+            $this->dbConfigOld = config('admin.database');
+        }
+
+        if (!$this->base_migration) {
+            $this->base_migration = LaADuoExt::config('base_migration', database_path('migrations/2016_01_04_173148_create_admin_tables.php'));
+        }
 
         $dbConfigCurrent = config("{$prefix}.database", []);
 
