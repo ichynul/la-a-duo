@@ -150,9 +150,9 @@ class Builder extends Command
 
             foreach ($noChangeTables as $table) {
                 // up
-                $contents = preg_replace("/Schema::[^\}]+?" . $table . "[^\}]+?\}\s*\)\s*;/s", "/*Table name : $table no change*/", $contents);
+                $contents = preg_replace("/Schema::[^\}]+?\." . $table . "[\"'][^\}]+?\}\s*\)\s*;/s", "/*Table name : $table no change*/", $contents);
                 // down
-                $contents = preg_replace("/Schema::[^;]*?dropIfExists[^;]+?" . $table . "[^;]+?;/", "/*Table name : $table no change*/", $contents);
+                $contents = preg_replace("/Schema::[^;]*?dropIfExists[^;]+?\." . $table . "[\"'][^;]+?;/", "/*Table name : $table no change*/", $contents);
 
                 $this->line("<info >`{$table}` : " . array_get($dbConfigCurrent, $table) . "</info> <b class='label label-warning'>No change</b>");
             }
@@ -160,7 +160,7 @@ class Builder extends Command
             unset($table);
 
             foreach ($newTables as $table) {
-                $contents = preg_replace("/Schema::[^\}]+?" . $table . "[^\}]+?\}\s*\)\s*;/s", "if (!Schema::hasTable(config('admin.database.$table'))){" . PHP_EOL . "            $0/*tableend*/}", $contents);
+                $contents = preg_replace("/Schema::[^\}]+?\." . $table . "[\"'][^\}]+?\}\s*\)\s*;/s", "if (!Schema::hasTable(config('admin.database.$table'))){" . PHP_EOL . "            $0/*tableend*/}", $contents);
             }
 
             $contents = preg_replace('/\$table\->/', '    $0', $contents);
