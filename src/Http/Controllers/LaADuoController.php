@@ -73,6 +73,7 @@ class LaADuoController extends Controller
                 $router->line("php artisan laaduo:route $prefix");
 
                 try {
+                    $router->getRoutes();
                     $router->prefix($prefix);
                 } catch (\Exception $e) {
                     $router->line("<error>" . $e->getMessage() . "</error>");
