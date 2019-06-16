@@ -2,15 +2,15 @@
 
 namespace Ichynul\LaADuo\Http\Controllers;
 
-use Encore\Admin\Widgets\Box;
-use Ichynul\LaADuo\LaADuoExt;
-use Encore\Admin\Widgets\Form;
 use Encore\Admin\Layout\Content;
-use Ichynul\LaADuo\Console\Router;
-use Ichynul\LaADuo\Console\Seeder;
-use Illuminate\Routing\Controller;
+use Encore\Admin\Widgets\Box;
+use Encore\Admin\Widgets\Form;
 use Ichynul\LaADuo\Console\Builder;
 use Ichynul\LaADuo\Console\Installer;
+use Ichynul\LaADuo\Console\Router;
+use Ichynul\LaADuo\Console\Seeder;
+use Ichynul\LaADuo\LaADuoExt;
+use Illuminate\Routing\Controller;
 
 class LaADuoController extends Controller
 {
@@ -63,7 +63,6 @@ class LaADuoController extends Controller
                     $installer->line("<error>" . $e->getMessage() . "</error>");
                 }
 
-
                 $lines = array_merge($lines, $installer->getLines());
             }
 
@@ -88,7 +87,7 @@ class LaADuoController extends Controller
                 $builder->line("php artisan laaduo:build $prefix");
 
                 $builder->prefix($prefix);
-                try { } catch (\Exception $e) {
+                try {} catch (\Exception $e) {
                     $builder->line("<error>" . $e->getMessage() . "</error>");
                 }
 
@@ -121,11 +120,7 @@ class LaADuoController extends Controller
 
         $form->setWidth(2, 1);
 
-        $commonds = new Box('Commonds', view('la-a-duo::help'));
-
-        $commonds->solid();
-
-        $form->html($commonds)->setWidth(12, 0);
+        $form->html(view('la-a-duo::help'), 'Commonds');
 
         $arr = [];
 
