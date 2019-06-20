@@ -72,7 +72,10 @@ class LaADuoExt extends Extension
             config(['admin' => $baseConfig]);
         }
 
-        config(['admin.route.prefix' => $prefix]);
+        config([
+            'admin.route.prefix' => $prefix,
+            'admin.auth.guard' => $prefix,//in new version of laravel-admin
+        ]);
     }
 
     /**
@@ -143,6 +146,6 @@ class LaADuoExt extends Extension
 
     public static function guard()
     {
-        return Auth::guard(static::$bootPrefix);
+        return Auth::guard(static::$bootPrefix); //return Admin::guard(); in new version of laravel-admin
     }
 }
