@@ -21,7 +21,7 @@ class Authenticate extends BaseAuthenticate
 
         if (!$guard->guest()) {
 
-            Auth::guard('admin')->setUser($guard->user());
+            Auth::guard('admin')->setUser($guard->user());// in old version of laravel-admin, this is needed .
         }
 
         return $next($request);
