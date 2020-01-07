@@ -4,6 +4,7 @@ namespace Ichynul\LaADuo;
 
 use Encore\Admin\Extension;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Arr;
 
 class LaADuoExt extends Extension
 {
@@ -49,16 +50,16 @@ class LaADuoExt extends Extension
 
         if (is_array($config)) {
 
-            if (!array_get($config, 'bootstrap')) {
+            if (!Arr::get($config, 'bootstrap')) {
 
                 $bootstrap = static::getBootstrap($prefix);
 
-                array_set($config, 'bootstrap', $bootstrap);
+                Arr::set($config, 'bootstrap', $bootstrap);
             }
 
-            if (!array_get($config, 'auth.controller')) {
+            if (!Arr::get($config, 'auth.controller')) {
 
-                array_set($config, 'auth.controller', static::getDefaultAuthController($prefix));
+                Arr::set($config, 'auth.controller', static::getDefaultAuthController($prefix));
             }
         } else {
 

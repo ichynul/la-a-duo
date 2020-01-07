@@ -11,6 +11,7 @@ use Ichynul\LaADuo\Console\Router;
 use Ichynul\LaADuo\Console\Seeder;
 use Ichynul\LaADuo\LaADuoExt;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Arr;
 
 class LaADuoController extends Controller
 {
@@ -128,7 +129,7 @@ class LaADuoController extends Controller
             $arr[$p] = $p;
         }
 
-        $form->radio('prefix', 'Prefix')->options($arr)->default(request('prefix', array_get($prefixes, 0)))->setWidth(6, 2);
+        $form->radio('prefix', 'Prefix')->options($arr)->default(request('prefix', Arr::get($prefixes, 0)))->setWidth(6, 2);
 
         $form->checkbox('commonds', 'Commonds')
 

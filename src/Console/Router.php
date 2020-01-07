@@ -4,6 +4,7 @@ namespace Ichynul\LaADuo\Console;
 
 use Ichynul\LaADuo\LaADuoExt;
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 
 class Router extends Command
 {
@@ -160,11 +161,11 @@ class Router extends Command
 
         $route = config('admin.route', []);
 
-        $basePrefix = array_get($route, 'prefix', 'admin');
+        $basePrefix = Arr::get($route, 'prefix', 'admin');
 
-        $baseMiddleware = array_get($route, 'middleware', []);
+        $baseMiddleware = Arr::get($route, 'middleware', []);
 
-        $baseNamespace = array_get($route, 'namespace', '');
+        $baseNamespace = Arr::get($route, 'namespace', '');
 
         $extend_routes = LaADuoExt::config('extend_routes', false);
 

@@ -6,6 +6,7 @@ use Encore\Admin\Admin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Arr;
 
 class LaADuoServiceProvider extends ServiceProvider
 {
@@ -107,9 +108,9 @@ class LaADuoServiceProvider extends ServiceProvider
 
         $authController = config('admin.auth.controller', '');
 
-        $basePrefix = array_get($route, 'prefix', 'admin');
+        $basePrefix = Arr::get($route, 'prefix', 'admin');
 
-        $baseMiddleware = array_get($route, 'middleware', []);
+        $baseMiddleware = Arr::get($route, 'middleware', []);
 
         LaADuoExt::$basePrefix = $basePrefix;
 

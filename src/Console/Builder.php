@@ -7,6 +7,7 @@ use Ichynul\LaADuo\Models\Migration;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Console\Input\ArgvInput;
+use Illuminate\Support\Arr;
 
 class Builder extends Command
 {
@@ -125,23 +126,23 @@ class Builder extends Command
         /**
          * Connection is same check tables diffrence
          */
-        if (array_get($dbConfigCurrent, 'connection') == array_get($this->dbConfigOld, 'connection')) {
+        if (Arr::get($dbConfigCurrent, 'connection') == Arr::get($this->dbConfigOld, 'connection')) {
 
             $newTables = [];
 
             foreach ($watchTables as $table) {
 
-                if (array_get($dbConfigCurrent, $table) == array_get($this->dbConfigOld, $table)) {
+                if (Arr::get($dbConfigCurrent, $table) == Arr::get($this->dbConfigOld, $table)) {
                     continue;
                 }
 
-                if (empty(array_get($dbConfigCurrent, $table))) {
+                if (empty(Arr::get($dbConfigCurrent, $table))) {
                     continue;
                 }
 
                 $newTables[] = $table;
 
-                $this->line("<info >`{$table}` : " . array_get($dbConfigCurrent, $table) . "</info> <b class='label label-success'>New</b>");
+                $this->line("<info >`{$table}` : " . Arr::get($dbConfigCurrent, $table) . "</info> <b class='label label-success'>New</b>");
             }
 
             unset($table);
@@ -154,7 +155,7 @@ class Builder extends Command
                 // down
                 $contents = preg_replace("/Schema::[^;]*?dropIfExists[^;]+?\." . $table . "[\"'][^;]+?;/", "/*Table name : $table no change*/", $contents);
 
-                $this->line("<info >`{$table}` : " . array_get($dbConfigCurrent, $table) . "</info> <b class='label label-warning'>No change</b>");
+                $this->line("<info >`{$table}` : " . Arr::get($dbConfigCurrent, $table) . "</info> <b class='label label-warning'>No change</b>");
             }
 
             unset($table);
@@ -173,10 +174,10 @@ class Builder extends Command
             }
         } else {
 
-            $this->line("Database connection changed:" . array_get($dbConfigCurrent, 'connection'));
+            $this->line("Database connection changed:" . Arr::get($dbConfigCurrent, 'connection'));
 
             foreach ($watchTables as $table) {
-                $this->line("<info>`{$table}` " . array_get($dbConfigCurrent, $table) . "</info> <b class='label label-success'>OK</b>");
+                $this->line("<info>`{$table}` " . Arr::get($dbConfigCurrent, $table) . "</info> <b class='label label-success'>OK</b>");
             }
         }
 
