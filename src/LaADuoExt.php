@@ -23,7 +23,10 @@ class LaADuoExt extends Extension
     public $permission = [
         'name' => 'Laaduo',
         'slug' => 'admin.laaduo',
-        'path' => 'la-a-duo/*',
+        'path.*' => 'la-a-duo/*',
+        'path' => [],
+        'method' => ['*'],
+        'method.*' => '*'
     ];
 
     /**
