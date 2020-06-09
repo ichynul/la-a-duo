@@ -24,8 +24,8 @@ class LaADuoExt extends Extension
         'name' => 'Laaduo',
         'slug' => 'admin.laaduo',
         'path.*' => 'la-a-duo/*',
-        'path' => [],
-        'method' => ['*'],
+        'path' => ['la-a-duo/index'],
+        'method' => null,
         'method.*' => '*'
     ];
 
