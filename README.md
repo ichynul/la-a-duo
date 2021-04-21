@@ -1,3 +1,5 @@
+## 现在不怎使用`laravel`和`laravel-admin`了，遇到问题我未必能帮到你，如果你打算使用此扩展，需要有一定的解决问题能力。如果你解决了什么问题，欢迎提交pr
+
 # laravel-admin la-a-duo
 
 ## Installation
